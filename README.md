@@ -4,13 +4,13 @@ Iridium Short Burst Data (SBD) Data Engineering
 This project establishes a data pipeline to process SBD messages in JSON format.
 
 1. Iridium devices transmit SBD messages through satellite telemetry systems.
-2. AWS SQS queue(s) captures these messages.
-3. A service (Node/Express on AWS EC2) is subscribed to the queue or serverless function (AWS Lambda) is triggered after messages are received.
-4. The service or serverless function stores the JSON data in a NoSQL database (MongoDB on AWS EC2) or managed storage (AWS S3).
-5. A service with scheduled functions (Node/Express) retrieves the stored, raw JSON object from the NoSQL database (MongoDB on AWS EC2) or serverless function (AWS Lambda) is triggered to retrieve the raw JSON object from storage (AWS S3).
-6. After the raw JSON object is extracted from data source, it is transformed and loaded (ETL Pipeline) into a SQL database.
+2. (a) The Iridium CloudConnect template will setup AWS SQS queue(s) to capture these messages. (b) An email server can be provisioned with Iridium to send SBD messages via email. (c) The Iridium DirectIP service is not discussed.
+3. (a) A service is subscribed to the queue and retrieves messages. (b) A serverless function is triggered by new messages in the queue. (c) A scheduled task reads emails from the email server.
+4. (a) A service stores the JSON data in a NoSQL database (MongoDB on AWS EC2) (b) A serverless function stores managed storage (AWS S3) (c) Emails with SBD messages are stored in email server.
+5. (a) A service with scheduled functions retrieves the stored, raw JSON objects from a NoSQL database (b) A serverless function is scheduled to retrieve the raw JSON objects from cloud storage (c) A scheduled task reads emails.
+6. After the raw data is extracted from source, it is transformed and loaded (ETL Pipeline) into a SQL database.
 
-### Prerequisites (My Self-Managed Stack with Iridium CloudConnect)
+### Prerequisites (My Self-Managed Stack w/ Iridium CloudConnect)
 Node.js and npm installed on your development machine.
 
 ### Installation
@@ -32,7 +32,7 @@ Node.js and npm installed on your development machine.
 
 2. The service will listen for incoming messages in the AWS SQS after .env file is configured with connection strings.
 
-### Technologies (Self-Managed Provisioned w/ Iridium CloudConnect) *Semi-Managed: Best Performance; Highest Scalability; Highest Cost: $$$*
+### Technologies (My Self-Managed Stack Provisioned w/ Iridium CloudConnect) *Semi-Managed: Best Performance; Highest Scalability; Highest Cost: $$$*
 
 - AWS SQS (for message queueing)
 - TypeScript (for type safety and improved development experience)
