@@ -1,24 +1,67 @@
 # short-burst-data
-Iridium Short Burst Data (SBD) Data Engineering
+Iridium Short Burst Data (SBD) Unofficial Data Engineering Guide
 
-This project establishes a data pipeline to process SBD messages in JSON format.
+This project establishes various data pipelines to retrieve, process, and store Iridium SBD.
 
-1. Iridium devices transmit SBD messages through satellite telemetry systems.
-2. (a) The Iridium CloudConnect template will setup AWS SQS queue(s) to capture these messages. (b) An email server can be provisioned with Iridium to send SBD messages via email. (c) The Iridium DirectIP service is not discussed.
-3. (a) A service is subscribed to the queue and retrieves messages. (b) A serverless function is triggered by new messages in the queue. (c) A scheduled task reads emails from the email server.
-4. (a) A service stores the JSON data in a NoSQL database (MongoDB on AWS EC2) (b) A serverless function stores managed storage (AWS S3) (c) Emails with SBD messages are stored in email server.
-5. (a) A service with scheduled functions retrieves the stored, raw JSON objects from a NoSQL database (b) A serverless function is scheduled to retrieve the raw JSON objects from cloud storage (c) A scheduled task reads emails.
-6. After the raw data is extracted from source, it is transformed and loaded (ETL Pipeline) into a SQL database.
+Iridium devices transmit SBD messages through satellite telemetry systems.
 
-### Prerequisites (My Self-Managed Stack w/ Iridium CloudConnect)
-Node.js and npm installed on your development machine.
+   **SBD COMMUNICATION METHODS**
+
+   A. Iridium DirectIP
+
+   B. Iridium CloudConnect
+
+   C. Email
+
+NOTE: All destinations will be provisioned through Iridium SPNet Pro (https://spnetpro.iridium.com).
+
+### Iridium DirectIP
+
+"The advantage DirectIP has over the existing email protocol is the efficiency with which DirectIP
+transfers SBD between the Iridium Gateway and client applications and smaller latencies. DirectIP is
+comprised of a specialized socket-oriented communications protocol which uses direct connections between
+the Iridium gateway and the client applications. The DirectIP protocol consists of separate gateway components for the transfer of MO and MT
+messages. The interaction can be likened to client/server architecture. The MO and MT DirectIP protocols
+utilize bi-directional TCP/IP socket connections." (NAL Research Corporation, 2006)
+
+NOTE: I am referencing Pacific Gyre's in-house service and open-source solutions by Guilherme Castelao (https://github.com/castelao/DirectIP), Chris X Edwards (http://xed.ch/project/isbd), and Pete Gadomski (https://github.com/gadomski/sbd).
+
+// Data Pipeline Description In-Progress
+
+### Iridium CloudConnect
+"The first and only global cloud-based satellite solution. Together with Amazon Web Services (AWS), Iridium CloudConnect provides a powerful tool for developers seeking a singular communications platform to manage connected devices. Iridium CloudConnect enables devices to send and receive messages through the AWS-hosted service without having to develop a connecting service to the Iridium Short Burst Data® (SBD®) gateway. Data Transfer: Data is transferred through closed carrier networks and dedicated secure private connections between Iridium and AWS. Authentication: Iridium CloudConnect is set up using cross-account authentication, and a simple script that creates the necessary infrastructure. Data Delivery: Customers receive their SBD device data in a Simple Queue Service (SQS) queue in JavaScript Object Notation (JSON) format. Private Queues: Queues reside in the customer’s own AWS Virtual Private Cloud (VPC) environment." (Iridium, n.d.)
+
+NOTE: I contacted my Iridium representative and met with the Iridium engineering team to setup and provision the AWS SQS queue(s) (https://github.com/aws-samples/aws-iot-iridium-satellite/blob/main/sbd-getting-started/README.md).
+
+// Data Pipeline Description In-Progress
+
+1. AWS SQS MO, MT, ME, MC queues provisioned and collecting messages from Iridium.
+2. Service is subscribed or serverless function is triggered to retrieve messages from queue(s).
+3. Service or serverless function stores messages as raw JSON objects in a semi-structured database or object storage.
+4. Another scheduled or triggered function reads the raw JSON objects from the database or storage, processes and transforms the data, and stores it in a structured database.
+
+### Email
+Provision an email destination on Iridium SPNet Pro to your self-hosted email server.
+
+NOTE: I setup and deployed a self-hosted, self-managed email server, then provisioned the email address through SPNet Pro.
+
+// Data Pipeline Description In-Progress
+
+# You Can Use These Projects
+
+### Iridium DirectIP (Development In-Progress)
+
+// Implementation In-Progress
+
+### Iridium CloudConnect w/ My Preferred Stack
+You need Node.js and npm installed on your development machine (https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
 
 ### Installation
 ```git clone https://github.com/jacksonmccluskey/short-burst-data.git```
 
 1. Navigate to the project directory
    
-```cd short-burst-data```
+```cd short-burst-data/iridium-cloudconnect```
 
 2. Install dependencies
    
@@ -28,11 +71,11 @@ Node.js and npm installed on your development machine.
 
 1. Start
 
-```npm run production```
+```npm run development``` or add custom `.env` file then ```npm run production```
 
 2. The service will listen for incoming messages in the AWS SQS after .env file is configured with connection strings.
 
-### Technologies (My Self-Managed Stack Provisioned w/ Iridium CloudConnect) *Semi-Managed: Best Performance; Highest Scalability; Highest Cost: $$$*
+### Technologies (My Preferred Stack w/ Iridium CloudConnect) *Semi-Managed: High Performance; Highest Scalability; Highest Cost: $$$*
 
 - AWS SQS (for message queueing)
 - TypeScript (for type safety and improved development experience)
