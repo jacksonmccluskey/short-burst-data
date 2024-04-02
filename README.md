@@ -20,7 +20,7 @@ Node.js and npm installed on your development machine.
    
 ```cd short-burst-data```
 
-3. Install dependencies
+2. Install dependencies
    
 ```npm install```
 
@@ -32,7 +32,7 @@ Node.js and npm installed on your development machine.
 
 2. The service will listen for incoming messages in the AWS SQS after .env file is configured with connection strings.
 
-### Technologies (Self-Managed Provisioned w/ Iridium CloudConnect) *Semi-Managed: Best Performance; Highest Scalability $ Highest Cost*
+### Technologies (Self-Managed Provisioned w/ Iridium CloudConnect) *Semi-Managed: Best Performance; Highest Scalability; Highest Cost: $$$*
 
 - AWS SQS (for message queueing)
 - TypeScript (for type safety and improved development experience)
@@ -46,7 +46,7 @@ Node.js and npm installed on your development machine.
 
 # Alternatives
 
-### Technologies (100% Cloud Technologies on AWS Provisioned w/ Iridium CloudConnect) *Fully-Managed: Moderate Performance; Moderate Scalability $ Moderate Cost*
+### Technologies (100% Cloud Technologies on AWS Provisioned w/ Iridium CloudConnect) *Fully-Managed: Moderate Performance; Moderate Scalability; Moderate Cost $$*
 
 - AWS SQS (for message queueing)
 - Python (for scripting)
@@ -55,10 +55,10 @@ Node.js and npm installed on your development machine.
 - AWS S3 (for scalable storage)
 - AWS DocumentDB (for managed NoSQL database)
 - AWS RDS (for managed SQL database)
-- AWS API Gateway (
-- AWS CloudWatch
+- AWS API Gateway (for managed API development)
+- AWS CloudWatch (for service analytics)
 
-### Technologies (Self-Hosted & Self-Managed w/ Email Collection Provisioned w/ Iridium) *Self-Managed: Worst Performance; Worst Scalability $ Lowest Cost*
+### Technologies (Self-Hosted & Self-Managed w/ Email Collection Provisioned w/ Iridium) *Self-Managed: Worst Performance; Worst Scalability; Lowest Cost $*
 
 - AWS EC2 (Ubuntu 22.04) (or on-premise VM)
 - Mail-in-a-Box [https://github.com/mail-in-a-box/mailinabox]
