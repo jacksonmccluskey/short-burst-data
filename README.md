@@ -1,5 +1,4 @@
-# short-burst-data
-Iridium Short Burst Data (SBD) Unofficial Data Engineering Guide
+# Iridium Short Burst Data (SBD) Unofficial Data Engineering Guide
 
 This project establishes various data pipelines to retrieve, process, and store Iridium SBD.
 
