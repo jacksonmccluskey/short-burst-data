@@ -27,9 +27,45 @@ This is the industry standard communication protocol for Iridium SBD communicati
 
 NOTE: For this project, I am referencing open-source solutions by Guilherme Castelao (https://github.com/castelao/DirectIP), Chris X Edwards (http://xed.ch/project/isbd), and Pete Gadomski (https://github.com/gadomski/sbd), as well as my own knowledge from working with Iridium-connected devices at my company.
 
-// Data Pipeline Description In-Progress
+1. **Device-to-Gateway (MO):**
 
-1. 
+   Iridium-connected device initiates a session and transmits an SBD message (payload) to the Iridium Gateway.
+   The message includes the device's IMEI (identifier), session status, and optional location information.
+
+2. **MO DirectIP Connection:**
+
+   Iridium Gateway establishes a temporary connection with a designated server (yours) using the DirectIP protocol.
+   The Gateway transmits the complete MO message, including header and payload, to your server.
+   Your server receives and processes the MO message data.
+
+3. **(Optional) Server Response:**
+
+   Depending on your application's design, your server may send an acknowledgement back to the Gateway after processing the MO message.
+   The DirectIP protocol itself doesn't require this acknowledgement for MO messages.
+
+4. **Gateway-to-Device (MT):**
+
+   Your application sends an MT message (payload) along with destination IMEI and any desired flags to your server.
+   The flags can specify actions for the Iridium Gateway, such as queuing the message for later delivery or sending a ring alert to the device.
+
+5. **MT DirectIP Connection:**
+
+   Your server initiates a connection with the Iridium Gateway using DirectIP.
+   Your server transmits the complete MT message, including header and payload (if applicable), to the Gateway.
+
+6. **Gateway Processing:**
+
+   The Iridium Gateway validates the MT message (IMEI validity, payload size, etc.).
+   Based on the flags in the message, the Gateway performs actions like:
+   Queuing the payload for future delivery to the destination device.
+   Sending a ring alert to the destination device.
+
+7. **Confirmation to Server:**
+
+   The Iridium Gateway sends a confirmation message back to your server indicating success or failure of the MT message processing.
+   The confirmation may include details like the position of the queued message in the device's queue (for successful delivery) or an error code (for failed delivery).
+
+NOTE: This is a simplified overview defined by myself based on my personal experiences in related developments. The actual data pipeline may involve additional steps depending on your specific configuration and Iridium network interactions. T
 
 ### Iridium CloudConnect
 This is the result of a new AWS Partnership, however, it is not a service, it is a template to setup AWS SQS queues (MO, MT, MC, and ME) that you will provision with the Iridium team for bi-directional data. "The first and only global cloud-based satellite solution. Together with Amazon Web Services (AWS), Iridium CloudConnect provides a powerful tool for developers seeking a singular communications platform to manage connected devices. Iridium CloudConnect enables devices to send and receive messages through the AWS-hosted service without having to develop a connecting service to the Iridium Short Burst Data® (SBD®) gateway. Data Transfer: Data is transferred through closed carrier networks and dedicated secure private connections between Iridium and AWS. Authentication: Iridium CloudConnect is set up using cross-account authentication, and a simple script that creates the necessary infrastructure. Data Delivery: Customers receive their SBD device data in a Simple Queue Service (SQS) queue in JavaScript Object Notation (JSON) format. Private Queues: Queues reside in the customer’s own AWS Virtual Private Cloud (VPC) environment." (Iridium, n.d.)
