@@ -1,34 +1,31 @@
 # Iridium Short Burst Data (SBD) Unofficial Data Engineering Guide
 
-This project establishes various data pipelines to retrieve, process, and store Iridium SBD.
+This project establishes various data pipelines to retrieve, process, and store Short Burst Data (SBD) from your Iridium-connected devices.
 
-Iridium devices transmit SBD messages through satellite telemetry systems.
+Iridium devices transmit SBD messages through their low orbit satellite telemetry systems.
 
-   **SBD COMMUNICATION METHODS**
+### SBD Communication Methods
 
-   A. Iridium DirectIP
+   A. Iridium DirectIP (Standard)
 
-   B. Iridium CloudConnect
+   B. Iridium CloudConnect (New)
 
-   C. Email
+   C. Email (Old)
 
 NOTE: All destinations will be provisioned through Iridium SPNet Pro (https://spnetpro.iridium.com).
 
 ### Iridium DirectIP
 
-"The advantage DirectIP has over the existing email protocol is the efficiency with which DirectIP
-transfers SBD between the Iridium Gateway and client applications and smaller latencies. DirectIP is
-comprised of a specialized socket-oriented communications protocol which uses direct connections between
-the Iridium gateway and the client applications. The DirectIP protocol consists of separate gateway components for the transfer of MO and MT
-messages. The interaction can be likened to client/server architecture. The MO and MT DirectIP protocols
-utilize bi-directional TCP/IP socket connections." (NAL Research Corporation, 2006)
+This is the industry standard communication protocol for Iridium SBD communication. "The advantage DirectIP has over the existing email protocol is the efficiency with which DirectIP transfers SBD between the Iridium Gateway and client applications and smaller latencies. DirectIP is comprised of a specialized socket-oriented communications protocol which uses direct connections between the Iridium gateway and the client applications. The DirectIP protocol consists of separate gateway components for the transfer of MO and MT messages. The interaction can be likened to client/server architecture. The MO and MT DirectIP protocols utilize bi-directional TCP/IP socket connections." (NAL Research Corporation, 2006)
 
-NOTE: I am referencing Pacific Gyre's in-house service and open-source solutions by Guilherme Castelao (https://github.com/castelao/DirectIP), Chris X Edwards (http://xed.ch/project/isbd), and Pete Gadomski (https://github.com/gadomski/sbd).
+NOTE: For this project, I am referencing open-source solutions by Guilherme Castelao (https://github.com/castelao/DirectIP), Chris X Edwards (http://xed.ch/project/isbd), and Pete Gadomski (https://github.com/gadomski/sbd), as well as my own knowledge from working with Iridium-connected devices at my company.
 
 // Data Pipeline Description In-Progress
 
+1. 
+
 ### Iridium CloudConnect
-"The first and only global cloud-based satellite solution. Together with Amazon Web Services (AWS), Iridium CloudConnect provides a powerful tool for developers seeking a singular communications platform to manage connected devices. Iridium CloudConnect enables devices to send and receive messages through the AWS-hosted service without having to develop a connecting service to the Iridium Short Burst Data® (SBD®) gateway. Data Transfer: Data is transferred through closed carrier networks and dedicated secure private connections between Iridium and AWS. Authentication: Iridium CloudConnect is set up using cross-account authentication, and a simple script that creates the necessary infrastructure. Data Delivery: Customers receive their SBD device data in a Simple Queue Service (SQS) queue in JavaScript Object Notation (JSON) format. Private Queues: Queues reside in the customer’s own AWS Virtual Private Cloud (VPC) environment." (Iridium, n.d.)
+This is the result of a new AWS Partnership, however, it is not a service, it is a template to setup AWS SQS queues (MO, MT, MC, and ME) that you will provision with the Iridium team for bi-directional data. "The first and only global cloud-based satellite solution. Together with Amazon Web Services (AWS), Iridium CloudConnect provides a powerful tool for developers seeking a singular communications platform to manage connected devices. Iridium CloudConnect enables devices to send and receive messages through the AWS-hosted service without having to develop a connecting service to the Iridium Short Burst Data® (SBD®) gateway. Data Transfer: Data is transferred through closed carrier networks and dedicated secure private connections between Iridium and AWS. Authentication: Iridium CloudConnect is set up using cross-account authentication, and a simple script that creates the necessary infrastructure. Data Delivery: Customers receive their SBD device data in a Simple Queue Service (SQS) queue in JavaScript Object Notation (JSON) format. Private Queues: Queues reside in the customer’s own AWS Virtual Private Cloud (VPC) environment." (Iridium, n.d.)
 
 NOTE: I contacted my Iridium representative and met with the Iridium engineering team to setup and provision the AWS SQS queue(s) (https://github.com/aws-samples/aws-iot-iridium-satellite/blob/main/sbd-getting-started/README.md).
 
