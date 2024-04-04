@@ -1,16 +1,23 @@
-# Iridium Short Burst Data (SBD) Unofficial Data Engineering Guide
+# Iridium Short Burst Data® (SBD®) Unofficial Data Engineering Systems by Jackson McCluskey
 
-This project establishes various data pipelines to retrieve, process, and store Short Burst Data (SBD) from your Iridium-connected devices.
+This project focuses on building data pipelines to retrieve and manage Iridium SBD messages from your Iridium-connected devices.
 
-Iridium devices transmit SBD messages through their low orbit satellite telemetry systems.
+Iridium SBD is a real-time, two-way messaging service enabling frequent data transmissions between remote equipment and centralized computer systems via Iridium's Low-Earth Orbit (LEO) satellite network. It offers several advantages, including:
 
-### SBD Communication Methods
+- **Global Availability:** Reliable coverage from pole-to-pole through a mesh of 66 active Iridium satellites.
+- **Real-Time Communication:** Low-latency connections due to shorter transmission paths compared to traditional satellite networks.
+- **Two-Way Connectivity:** Gain insights and send commands to manage assets remotely anywhere in the world.
+- **Range of Module Options:** Choose from small, lightweight, and low-power modules to integrate Iridium SBD into your custom solutions.
+  
+IMPORTANT NOTE: This project is not affiliated with Iridium.
 
-   A. Iridium DirectIP (Standard)
+### Iridium Offers 3 SBD Communication Methods
 
-   B. Iridium CloudConnect (New)
+   1. Iridium DirectIP
 
-   C. Email (Old)
+   2. Iridium CloudConnect (AWS)
+
+   3. Email
 
 NOTE: All destinations will be provisioned through Iridium SPNet Pro (https://spnetpro.iridium.com).
 
