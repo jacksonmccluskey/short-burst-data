@@ -3,7 +3,8 @@
   "description": "Iridium Short Burst Data (SBD) DirectIP Implementation by Jackson McCluskey",
   "version": "1.0.0",
   "scripts": {
-    "directip": "npx ts-node ./src/server.ts"
+    "directip": "npx ts-node ./src/server.ts",
+    "tester": "npx ts-node ./src/tester.ts"
   },
   "repository": {
     "type": "git",

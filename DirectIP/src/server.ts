@@ -16,6 +16,8 @@ interface IParseDirectIPMessage {
 const parseDirectIPMessage = (data: Buffer): IParseDirectIPMessage => {
 	// TODO: Implement Logic To Parse Data Based On DirectIP Message Structure
 	console.warn('parseDirectIPMessage Not Implemented!');
+	console.log(`Buffer data: ${data}`);
+	console.log(`Buffer data string: ${data.toString()}`);
 	return { type: 'XX', payload: data.toString() };
 };
 
