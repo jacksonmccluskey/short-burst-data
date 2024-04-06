@@ -8,16 +8,16 @@ Iridium SBD is a real-time, two-way messaging service enabling frequent data tra
 - **Real-Time Communication:** Low-latency connections due to shorter transmission paths compared to traditional satellite networks.
 - **Two-Way Connectivity:** Gain insights and send commands to manage assets remotely anywhere in the world.
 - **Range of Module Options:** Choose from small, lightweight, and low-power modules to integrate Iridium SBD into your custom solutions.
-  
+
 IMPORTANT NOTE: This project is not affiliated with Iridium.
 
 ### Iridium Offers 3 SBD Communication Methods
 
-   1. Iridium DirectIP
+1.  Iridium DirectIP
 
-   2. Iridium CloudConnect (AWS)
+2.  Iridium CloudConnect (AWS)
 
-   3. Email
+3.  Email
 
 NOTE: All destinations will be provisioned through Iridium SPNet Pro (https://spnetpro.iridium.com).
 
@@ -68,6 +68,7 @@ NOTE: For this project, I am referencing open-source solutions by Guilherme Cast
 NOTE: This is a simplified overview defined by myself based on my personal experiences in related developments. The actual data pipeline may involve additional steps depending on your specific configuration and Iridium network interactions.
 
 ### Iridium CloudConnect
+
 This is the result of a new AWS Partnership, however, it is not a service, it is a template to setup AWS SQS queues (MO, MT, MC, and ME) that you will provision with the Iridium team for bi-directional data. "The first and only global cloud-based satellite solution. Together with Amazon Web Services (AWS), Iridium CloudConnect provides a powerful tool for developers seeking a singular communications platform to manage connected devices. Iridium CloudConnect enables devices to send and receive messages through the AWS-hosted service without having to develop a connecting service to the Iridium Short Burst Data® (SBD®) gateway. Data Transfer: Data is transferred through closed carrier networks and dedicated secure private connections between Iridium and AWS. Authentication: Iridium CloudConnect is set up using cross-account authentication, and a simple script that creates the necessary infrastructure. Data Delivery: Customers receive their SBD device data in a Simple Queue Service (SQS) queue in JavaScript Object Notation (JSON) format. Private Queues: Queues reside in the customer’s own AWS Virtual Private Cloud (VPC) environment." (Iridium, n.d.)
 
 NOTE: I contacted my Iridium representative and met with the Iridium engineering team to setup and provision the AWS SQS queue(s) (https://github.com/aws-samples/aws-iot-iridium-satellite/blob/main/sbd-getting-started/README.md).
@@ -80,11 +81,36 @@ NOTE: I contacted my Iridium representative and met with the Iridium engineering
 4. Another scheduled or triggered function reads the raw JSON objects from the database or storage, processes and transforms the data, and stores it in a structured database.
 
 ### Email
-Provision an email destination on Iridium SPNet Pro to your self-hosted email server.
 
-NOTE: I setup and deployed a self-hosted, self-managed email server, then provisioned the email address through SPNet Pro.
+Provision an email destination (email address) on Iridium SPNet Pro so Iridium can send SBD data to your email server as email messages.
 
-// Data Pipeline Description In-Progress
+NOTE: I deployed a self-hosted, self-managed email server with Mail-in-a-Box, then provisioned the email address through Iridium SPNet Pro so I can programmatically read the raw data after receiving the emails from my email server using IMAP from another service.
+
+Emails will be sent with an attached SBD file (.sbd file type; ex. XXX_ZZZ.sbd).
+
+**Subject:**
+
+```
+SBD Msg From Unit: *IMEI_NUMBER*
+```
+
+**Body:**
+
+```
+MOMSN: *MOMSN_NUMBER*
+MTMSN: *MTMSN_NUMBER*
+Time of Session (UTC): *Day Mon DD HH:MM:SS YYYY*
+Session Status: 00 - Transfer OK
+
+
+Message Size (bytes): *NUMBER_OF_BYTES*
+
+Unit Location: Lat = *LATITUDE_NUMBER* Long = *LONGITUDE_NUMBER*
+CEPradius = *CEP_RADIUS_NUMBER*
+```
+
+NOTE: Contact Iridium for your exact email message formatting.
 
 ### Installation
-```git clone https://github.com/jacksonmccluskey/short-burst-data.git```
+
+`git clone https://github.com/jacksonmccluskey/short-burst-data.git`
