@@ -1,100 +1,25 @@
 require('dotenv').config();
 
 import net from 'net';
+import { processMOMessage } from './mo/parse-mo-message';
+
+let directIPServer: net.Server | null = null;
 
 const socketPort = process.env.SOCKET_PORT
 	? parseInt(process.env.SOCKET_PORT)
 	: 10800;
 
-type MessageType = 'MO' | 'MT' | 'XX' | undefined;
+directIPServer = net.createServer((socket: net.Socket) => {
+	console.log('✅ Client Connected');
 
-interface IParseDirectIPMessage {
-	type: MessageType;
-	payload: string;
-}
+	socket.on('data', async (buffer: Buffer) => {
+		console.log(`buffer: ${buffer}`);
 
-const parseDirectIPMessage = (data: Buffer): IParseDirectIPMessage => {
-	// TODO: Implement Logic To Parse Data Based On DirectIP Message Structure
-	console.warn('parseDirectIPMessage Not Implemented!');
-	console.log(`Buffer data: ${data}`);
-	console.log(`Buffer data string: ${data.toString()}`);
-	return { type: 'XX', payload: data.toString() };
-};
-
-interface IMessage {
-	IMEI: string;
-	payload: string;
-}
-
-const handleMOMessage = (_message: IMessage): void => {
-	// TODO: Implement Logic To Store, Process, And Forward MO Messages
-	console.warn('handleMOMessage Not Implemented!');
-};
-
-const validateMTMessage = (_message: IMessage): boolean => {
-	// TODO: Implement Logic To Validate IMEI, Header Integrity, And Payload Size
-	console.warn('validateMTMessage Not Implemented!');
-	return true; // TODO: Replace With Actual Validation Logic Response
-};
-
-function sendMTConfirmation(_success: boolean, _messageID: number): void {
-	// TODO: Implement Logic To Send Confirmation Message To Gateway
-	console.warn('sendMTConfirmation Not Implemented!');
-}
-
-interface IMOMessage {
-	IMEI: string;
-	payload: string;
-}
-
-interface IMTMessage {
-	IMEI: string;
-	payload: string;
-}
-
-const directIPServer = net.createServer((socket: net.Socket) => {
-	console.log('✅ Client Connected.');
-
-	socket.on('data', (data: Buffer) => {
-		const message = parseDirectIPMessage(data);
-
-		switch (message.type) {
-			case 'MO':
-				const moMessage: IMOMessage = {
-					IMEI: message.payload.slice(0, 15), // TODO: Extract IMEI
-					payload: message.payload.slice(15), // TODO: Extract payload
-					// TODO: Extract All Properties
-				};
-				handleMOMessage(moMessage);
-				break;
-			case 'MT':
-				const mtMessage: IMTMessage = {
-					IMEI: message.payload.slice(0, 15), // TODO: Extract IMEI
-					payload: message.payload.slice(15), // TODO: Extract payload
-					// TODO: Extract All Properties
-				};
-
-				if (validateMTMessage(mtMessage)) {
-					console.log('✅ MT Message Received.', mtMessage);
-					// TODO: Send Positive Confirmation After Processing
-					sendMTConfirmation(true, 1); // TODO: ID
-					// TODO: Process MT Message
-				} else {
-					console.error('❌ Invalid MT Message!');
-					// TODO: Send Negative Confirmation
-					sendMTConfirmation(false, 1); // TODO: ID
-				}
-				break;
-			case 'XX':
-				console.warn('🟨 Message Received But Type Unknown.');
-				break;
-			default:
-				console.error('❌ Unexpected Message Type:', message.type);
-		}
+		await processMOMessage(buffer);
 	});
 
 	socket.on('error', (error) => {
-		console.error('🟥 Socket Error:', error);
+		console.error('🟥 Socket Error: ', error);
 	});
 
 	socket.on('close', () => {
