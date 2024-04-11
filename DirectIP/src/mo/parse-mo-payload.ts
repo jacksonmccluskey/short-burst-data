@@ -1,5 +1,4 @@
 import { IParseBufferMethodArgs, ParseBufferMethod } from './call-parse-method';
-import { IParsedBuffer } from './parse-mo-message';
 
 export interface IMOPayload {
 	payload: string;
@@ -10,6 +9,7 @@ export const parseMOPayload: ParseBufferMethod = async ({
 	parsedBuffer,
 }: IParseBufferMethodArgs): Promise<void> => {
 	const payload = buffer.toString('utf8');
+	console.log(`payload: ${payload}`);
 
 	if (!payload) {
 		console.log('Invalid payload');

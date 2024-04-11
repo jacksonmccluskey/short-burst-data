@@ -62,9 +62,9 @@ export const processMOMessage = async (buffer: Buffer): Promise<void> => {
 			}
 		}
 
-		console.log(`parsedBuffer: ${parsedBuffer}`);
+		console.log(`parsedBuffer: ${JSON.stringify(parsedBuffer)}`);
 	} catch (error) {
-		console.error('Error parsing DirectIP message:', error);
+		console.error('Error Parsing DirectIP Message:', error);
 		throw error;
 	}
 };

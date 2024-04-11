@@ -19,9 +19,9 @@ const parseLocationIndicators = (
 		return {};
 	}
 
-	const north = (indicatorByte & 0x02) === 0;
+	const north = (indicatorByte & 0x2) === 0;
 
-	const east = (indicatorByte & 0x01) === 0;
+	const east = (indicatorByte & 0x1) === 0;
 
 	return { north: north ? 1 : -1, east: east ? 1 : -1 };
 };
@@ -41,6 +41,7 @@ export const parseMOLocationInformation: ParseBufferMethod = async ({
 		console.log('No Indicators (NSI or EWI) Were Found.');
 		return;
 	}
+	console.log(`north: ${north}; east: ${east}`);
 
 	const latitudeDegrees = buffer.readUInt8(offset);
 	offset += 1;
@@ -49,6 +50,7 @@ export const parseMOLocationInformation: ParseBufferMethod = async ({
 	offset += 2;
 
 	const latitude = north * (latitudeDegrees + latitudeMinutes / (60 * 1000));
+	console.log(`latitude: ${latitude}`);
 
 	const longitudeDegrees = buffer.readUInt8(offset);
 	offset += 1;
@@ -57,8 +59,10 @@ export const parseMOLocationInformation: ParseBufferMethod = async ({
 	offset += 2;
 
 	const longitude = east * (longitudeDegrees + longitudeMinutes / (60 * 1000));
+	console.log(`longitude: ${longitude}`);
 
-	const cepRadius = buffer.readUInt8(offset);
+	const cepRadius = buffer.readUInt32BE(offset);
+	console.log(`cepRadius: ${cepRadius}`);
 
 	parsedBuffer.moLocationInformation = { latitude, longitude, cepRadius };
 };
