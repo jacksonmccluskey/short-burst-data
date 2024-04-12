@@ -46,19 +46,35 @@ export const parseMOLocationInformation: ParseBufferMethod = async ({
 	const latitudeDegrees = buffer.readUInt8(offset);
 	offset += 1;
 
+	console.log(`latitudeDegrees: ${latitudeDegrees}`);
+
 	const latitudeMinutes = buffer.readUInt16BE(offset);
 	offset += 2;
 
-	const latitude = north * (latitudeDegrees + latitudeMinutes / (60 * 1000));
+	console.log(`latitudeMinutes: ${latitudeMinutes}`);
+
+	const parsedLatitudeMinutes = latitudeMinutes; // / (60 * 1000);
+	const calculatedLatitudeDegrees = north * latitudeDegrees;
+	const latitude = parseFloat(
+		`${calculatedLatitudeDegrees}.${parsedLatitudeMinutes}`
+	);
 	console.log(`latitude: ${latitude}`);
 
 	const longitudeDegrees = buffer.readUInt8(offset);
 	offset += 1;
 
+	console.log(`longitudeDegrees: ${longitudeDegrees}`);
+
 	const longitudeMinutes = buffer.readUInt16BE(offset);
 	offset += 2;
 
-	const longitude = east * (longitudeDegrees + longitudeMinutes / (60 * 1000));
+	console.log(`longitudeMinutes: ${longitudeMinutes}`);
+
+	const parsedLongitudeMinutes = longitudeMinutes; // / (60 * 1000);
+	const calculatedLongitudeDegrees = east * longitudeDegrees;
+	const longitude = parseFloat(
+		`${calculatedLongitudeDegrees}.${parsedLongitudeMinutes}`
+	);
 	console.log(`longitude: ${longitude}`);
 
 	const cepRadius = buffer.readUInt32BE(offset);
