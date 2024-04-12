@@ -1,3 +1,4 @@
+import { insertDataIntoDB } from '../db/insert-data.db';
 import {
 	IEI,
 	getIEIDefinition,
@@ -53,7 +54,8 @@ export const processMOMessage = async (buffer: Buffer): Promise<void> => {
 				await callParseBufferMethod(
 					currentBuffer,
 					informationElementID,
-					parsedBuffer
+					parsedBuffer,
+					informationElementLength
 				);
 
 				offset += informationElementLength;
@@ -63,6 +65,8 @@ export const processMOMessage = async (buffer: Buffer): Promise<void> => {
 		}
 
 		console.log(`parsedBuffer: ${JSON.stringify(parsedBuffer)}`);
+
+		await insertDataIntoDB(parsedBuffer);
 	} catch (error) {
 		console.error('Error Parsing DirectIP Message:', error);
 		throw error;

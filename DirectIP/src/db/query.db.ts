@@ -1,17 +1,29 @@
-// TODO: import { dbConfig } from '../config/db.config';
+import { dbConfig } from '../config/db.config';
 
-// TODO: import sql from 'mssql';
+import sql, { ConnectionPool } from 'mssql';
 
-// TODO: const poolConnection = sql.connect(dbConfig);
+export const queryDB = async (queryString: string) => {
+	let poolConnection: ConnectionPool | undefined;
 
-export const queryDB = async (query: string) => {
 	try {
-		// TODO: const resultSet = await poolConnection.request().query(query);
+		console.log(`Attempting To Connect To DB With ${JSON.stringify(dbConfig)}`);
+		poolConnection = await sql.connect(dbConfig);
+	} catch (error) {
+		console.log(`Failed To Connect To DB: ${error}`);
+		return;
+	}
 
-		console.log(`Calling Query: ${query}`);
+	console.log('Connected To DB');
+
+	try {
+		console.log(`Calling Query: ${queryString}`);
+
+		const resultSet = await poolConnection.query(queryString);
+
+		console.log(`resultSet: ${JSON.stringify(resultSet)}`);
 	} catch (err) {
-		console.error(err.message);
+		console.error(`Failed To Query DB: ${err.message}`);
 	}
 };
 
-// TODO: poolConnection.close();
+// TODO: Implement poolConnection.close();

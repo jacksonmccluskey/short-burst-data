@@ -13,8 +13,6 @@ export const parseMOHeader: ParseBufferMethod = async ({
 	buffer,
 	parsedBuffer,
 }: IParseBufferMethodArgs): Promise<void> => {
-	console.log(`Buffer Length: ${buffer.length}`);
-
 	let offset = 0;
 
 	const cdrReference = buffer.readUInt32BE(offset);
@@ -35,7 +33,7 @@ export const parseMOHeader: ParseBufferMethod = async ({
 
 	const sessionStatus = buffer.readUInt8(offset);
 	console.log(`sessionStatus: ${sessionStatus}`);
-	if (!sessionStatus) {
+	if (sessionStatus === undefined || sessionStatus < 0) {
 		console.log('Invalid sessionStatus');
 		return;
 	}
@@ -43,7 +41,7 @@ export const parseMOHeader: ParseBufferMethod = async ({
 
 	const momsn = buffer.readUInt16BE(offset);
 	console.log(`momsn: ${momsn}`);
-	if (!momsn) {
+	if (momsn === undefined || momsn < 0) {
 		console.log('Invalid momsn');
 		return;
 	}
@@ -51,7 +49,7 @@ export const parseMOHeader: ParseBufferMethod = async ({
 
 	const mtmsn = buffer.readUInt16BE(offset);
 	console.log(`mtmsn: ${mtmsn}`);
-	if (!mtmsn) {
+	if (mtmsn === undefined || mtmsn < 0) {
 		console.log('Invalid mtmsn');
 		return;
 	}

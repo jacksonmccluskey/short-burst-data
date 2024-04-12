@@ -7,6 +7,7 @@ import { parseMOPayload } from './parse-mo-payload';
 export interface IParseBufferMethodArgs {
 	buffer: Buffer;
 	parsedBuffer: IParsedBuffer;
+	informationElementLength?: number;
 }
 export type ParseBufferMethod = (args: IParseBufferMethodArgs) => Promise<void>;
 
@@ -19,7 +20,12 @@ const parseMethods: { [keys in IEI]?: ParseBufferMethod } = {
 export const callParseBufferMethod = async (
 	buffer: Buffer,
 	iei: IEI,
-	parsedBuffer: IParsedBuffer
+	parsedBuffer: IParsedBuffer,
+	informationElementLength: number
 ): Promise<void> => {
-	await (parseMethods[iei] as ParseBufferMethod)({ buffer, parsedBuffer });
+	await (parseMethods[iei] as ParseBufferMethod)({
+		buffer,
+		parsedBuffer,
+		informationElementLength,
+	});
 };
