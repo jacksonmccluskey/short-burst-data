@@ -34,42 +34,42 @@ roles.forEach((role) => {
 					// message = Buffer.from([
 					// 	0x01, // Protocol Revision Number
 					// 	0x00, // Overall Message Length (104 bytes)
-					// 	0x38, // Overall Message Length (104 bytes)
+					// 	0x00, // Overall Message Length (104 bytes)
 					// 	0x01, // MO Header IEI
 					// 	0x00, // MO Header Length (26 bytes)
-					// 	0x1c, // MO Header Length (26 bytes)
+					// 	0x00, // MO Header Length (26 bytes)
 					// 	0x00, // CDR Reference
 					// 	0x00, // CDR Reference
 					// 	0x00, // CDR Reference
-					// 	0x01, // CDR Reference
+					// 	0x00, // CDR Reference
 					// 	...'123456789123456'.split('').map((char) => char.charCodeAt(0)), // IMEI (15 characters)
-					// 	0x02, // Session Status
+					// 	0x00, // Session Status
 					// 	0x00, // MOMSN
-					// 	0x01, // MOMSN
+					// 	0x00, // MOMSN
 					// 	0x00, // MTMSN
-					// 	0x02, // MTMSN
+					// 	0x00, // MTMSN
 					// 	0x00, // Time of Session
 					// 	0x00, // Time of Session
 					// 	0x00, // Time of Session
-					// 	0x01, // Time of Session
+					// 	0x00, // Time of Session
 					// 	0x02, // MO Payload IEI
 					// 	0x00, // Payload Length
-					// 	0x05, // Payload Length
-					// 	...'ABCDE'.split('').map((char) => char.charCodeAt(0)),
+					// 	0x00, // Payload Length
+					// 	...'ABCDE'.split('').map((char) => char.charCodeAt(0)), // Payload (N characters)
 					// 	0x03, // Location IEI
 					// 	0x00, // MO Location Length
 					// 	0x0b, // MO Location Length
 					// 	0b00000010, // Indicator
-					// 	0x5a, // Latitude
 					// 	0x00, // Latitude
 					// 	0x00, // Latitude
-					// 	0xb4, // Longitude
+					// 	0x00, // Latitude
 					// 	0x00, // Longitude
 					// 	0x00, // Longitude
+					// 	0x00, // Longitude
 					// 	0x00, // CEP Radius
 					// 	0x00, // CEP Radius
 					// 	0x00, // CEP Radius
-					// 	0x0b, // CEP Radius
+					// 	0x00, // CEP Radius
 					// ]);
 					break;
 				}
