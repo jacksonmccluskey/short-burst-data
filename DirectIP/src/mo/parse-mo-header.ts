@@ -1,4 +1,7 @@
-import { IParseBufferMethodArgs, ParseBufferMethod } from './call-parse-method';
+import {
+	IParseMOBufferMethodArgs,
+	ParseMOBufferMethod,
+} from './parse-mo-buffer';
 
 export interface IMOHeader {
 	CDR: number;
@@ -9,10 +12,10 @@ export interface IMOHeader {
 	timeOfSession: Date;
 }
 
-export const parseMOHeader: ParseBufferMethod = async ({
+export const parseMOHeader: ParseMOBufferMethod = async ({
 	buffer,
-	parsedBuffer,
-}: IParseBufferMethodArgs): Promise<void> => {
+	messageTracker,
+}: IParseMOBufferMethodArgs): Promise<void> => {
 	let offset = 0;
 
 	const cdrReference = buffer.readUInt32BE(offset);
@@ -62,7 +65,11 @@ export const parseMOHeader: ParseBufferMethod = async ({
 		return;
 	}
 
-	parsedBuffer.moHeader = {
+	if (messageTracker.parsedMOMessage == undefined) {
+		messageTracker.parsedMOMessage = {};
+	}
+
+	messageTracker.parsedMOMessage.moHeader = {
 		CDR: cdrReference,
 		IMEI: imei,
 		sessionStatus,

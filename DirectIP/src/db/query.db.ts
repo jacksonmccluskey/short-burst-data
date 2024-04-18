@@ -26,4 +26,4 @@ export const queryDB = async (queryString: string) => {
 	}
 };
 
-// TODO: Implement poolConnection.close();
+// NOTE: mssql Implementation For Database Query Will Be Replaced With Company API

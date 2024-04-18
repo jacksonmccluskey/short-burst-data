@@ -1,4 +1,7 @@
-import { IParseBufferMethodArgs, ParseBufferMethod } from './call-parse-method';
+import {
+	IParseMOBufferMethodArgs,
+	ParseMOBufferMethod,
+} from './parse-mo-buffer';
 
 export interface IMOLocationInformation {
 	latitude: number;
@@ -26,10 +29,10 @@ const parseLocationIndicators = (
 	return { north: north ? 1 : -1, east: east ? 1 : -1 };
 };
 
-export const parseMOLocationInformation: ParseBufferMethod = async ({
+export const parseMOLocationInformation: ParseMOBufferMethod = async ({
 	buffer,
-	parsedBuffer,
-}: IParseBufferMethodArgs): Promise<void> => {
+	messageTracker,
+}: IParseMOBufferMethodArgs): Promise<void> => {
 	let offset = 0;
 
 	const indicatorByte = buffer.readUInt8(offset);
@@ -53,7 +56,7 @@ export const parseMOLocationInformation: ParseBufferMethod = async ({
 
 	console.log(`latitudeMinutes: ${latitudeMinutes}`);
 
-	const parsedLatitudeMinutes = latitudeMinutes; // / (60 * 1000);
+	const parsedLatitudeMinutes = latitudeMinutes / 60000; // / (60 * 1000) = Convert Minutes To Decimal
 	const calculatedLatitudeDegrees = north * latitudeDegrees;
 	const latitude = parseFloat(
 		`${calculatedLatitudeDegrees}.${parsedLatitudeMinutes}`
@@ -70,7 +73,7 @@ export const parseMOLocationInformation: ParseBufferMethod = async ({
 
 	console.log(`longitudeMinutes: ${longitudeMinutes}`);
 
-	const parsedLongitudeMinutes = longitudeMinutes; // / (60 * 1000);
+	const parsedLongitudeMinutes = longitudeMinutes / 60000; // / (60 * 1000) = Convert Minutes To Decimal
 	const calculatedLongitudeDegrees = east * longitudeDegrees;
 	const longitude = parseFloat(
 		`${calculatedLongitudeDegrees}.${parsedLongitudeMinutes}`
@@ -80,5 +83,13 @@ export const parseMOLocationInformation: ParseBufferMethod = async ({
 	const cepRadius = buffer.readUInt32BE(offset);
 	console.log(`cepRadius: ${cepRadius}`);
 
-	parsedBuffer.moLocationInformation = { latitude, longitude, cepRadius };
+	if (messageTracker.parsedMOMessage == undefined) {
+		messageTracker.parsedMOMessage = {};
+	}
+
+	messageTracker.parsedMOMessage.moLocationInformation = {
+		latitude,
+		longitude,
+		cepRadius,
+	};
 };

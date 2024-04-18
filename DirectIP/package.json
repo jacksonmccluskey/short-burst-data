@@ -3,8 +3,12 @@
   "description": "Iridium Short Burst Data (SBD) DirectIP Implementation by Jackson McCluskey",
   "version": "1.0.0",
   "scripts": {
-    "directip": "npx ts-node ./src/server.ts",
-    "tester": "npx ts-node ./src/tester.ts"
+    "directip-api": "npx ts-node ./src/api/directip.api.ts",
+    "directip-server": "npx ts-node ./src/directip-server.ts",
+    "directip-client": "npx ts-node ./src/directip-client.ts",
+    "test directip-api": "npx ts-node ./src/testers/directip-api.tester.ts",
+    "test directip-server": "npx ts-node ./src/testers/directip-server.tester.ts",
+    "test directip-client": "npx ts-node ./src/testers/directip-client.tester.ts"
   },
   "repository": {
     "type": "git",
@@ -23,6 +27,8 @@
   },
   "author": "@jacksonmccluskey",
   "dependencies": {
+    "body-parser": "^1.20.2",
+    "express": "^4.19.2",
     "mssql": "^10.0.2",
     "npm": "^10.5.1"
   }

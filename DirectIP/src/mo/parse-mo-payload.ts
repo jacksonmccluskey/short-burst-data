@@ -1,15 +1,18 @@
-import { IParseBufferMethodArgs, ParseBufferMethod } from './call-parse-method';
+import {
+	IParseMOBufferMethodArgs,
+	ParseMOBufferMethod,
+} from './parse-mo-buffer';
 
 export interface IMOPayload {
 	payload: string;
 	payloadLength: number;
 }
 
-export const parseMOPayload: ParseBufferMethod = async ({
+export const parseMOPayload: ParseMOBufferMethod = async ({
 	buffer,
-	parsedBuffer,
+	messageTracker,
 	informationElementLength,
-}: IParseBufferMethodArgs): Promise<void> => {
+}: IParseMOBufferMethodArgs): Promise<void> => {
 	const hexValues = Array.from(buffer).map((byte) =>
 		byte.toString(16).padStart(2, '0')
 	);
@@ -25,7 +28,11 @@ export const parseMOPayload: ParseBufferMethod = async ({
 		return;
 	}
 
-	parsedBuffer.moPayload = {
+	if (messageTracker.parsedMOMessage == undefined) {
+		messageTracker.parsedMOMessage = {};
+	}
+
+	messageTracker.parsedMOMessage.moPayload = {
 		payload,
 		payloadLength,
 	};
