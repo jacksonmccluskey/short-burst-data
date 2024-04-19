@@ -22,5 +22,6 @@ export const processMTMessage = async ({
 	informationElementLength,
 }: IProcessMTMessageArgs) => {
 	console.log(`🚀 Processing MT Message... ${JSON.stringify(messageTracker)}`);
+
 	// TODO: Iridium Gateway Simulation
 };

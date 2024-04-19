@@ -7,6 +7,7 @@ import { resetMessageTracker } from './helpers/reset-message-tracker';
 import { processBuffer } from './methods/process-buffer.method';
 import { determineMessageType } from './helpers/message-type.helper';
 import { bufferStart } from './helpers/buffer-start.helper';
+import { propertySizesInBytes } from './config/property-size.config';
 
 let directIPServer: net.Server | null = null;
 
@@ -22,43 +23,83 @@ directIPServer = net.createServer((socket: net.Socket) => {
 	};
 
 	socket.on('data', async (buffer: Buffer) => {
-		console.log(`buffer: ${buffer}`);
+		try {
+			let bufferOffset = 0;
 
-		let bufferOffset = 0;
+			const increaseBufferOffset = (numberOfBytes: number) => {
+				bufferOffset += numberOfBytes;
+				messageTracker.messageBytes.currentNumberOfBytes += numberOfBytes;
+			};
 
-		if (messageTracker.messageType == undefined) {
-			bufferStart({ buffer, messageTracker });
-		}
+			if (
+				messageTracker.messageType == undefined &&
+				messageTracker.messageBytes.expectedNumberOfBytes == 0
+			) {
+				const startBytes =
+					propertySizesInBytes.protocolRevisionNumber +
+					propertySizesInBytes.overallMessageLength;
 
-		const informationElementID = buffer.readUInt8(bufferOffset);
-		bufferOffset += 1;
+				if (buffer.length < startBytes) {
+					throw new Error(`Invalid Buffer Size < ${startBytes}`);
+				}
 
-		const informationElementLength = buffer.readUInt16BE(bufferOffset);
-		bufferOffset += 2;
+				bufferStart({ buffer, messageTracker });
 
-		determineMessageType({ informationElementID, messageTracker });
+				bufferOffset += startBytes;
 
-		await processBuffer({
-			buffer,
-			iei: informationElementID,
-			messageTracker,
-			informationElementLength,
-		});
+				if (buffer.length == startBytes) {
+					console.log('Buffer Is Only Protocol');
+					return;
+				}
+			}
 
-		messageTracker.messageBytes.currentNumberOfBytes +=
-			informationElementLength;
+			while (bufferOffset < buffer.length) {
+				const informationBytes =
+					propertySizesInBytes.informationElementID +
+					propertySizesInBytes.informationElementLength;
 
-		if (
-			messageTracker.messageBytes.currentNumberOfBytes ===
-			messageTracker.messageBytes.expectedNumberOfBytes
-		) {
-			await handleParsedMessage({ messageTracker });
+				if (buffer.length < informationBytes) {
+					throw new Error('Not Enough Information Bytes');
+				}
+
+				const informationElementID = buffer.readUInt8(bufferOffset); // 1 Byte [char]
+				increaseBufferOffset(propertySizesInBytes.informationElementID);
+				console.log(`informationElementID: ${informationElementID}`);
+
+				const informationElementLength = buffer.readUInt16BE(bufferOffset); // 2 Byte [unsigned short]
+				increaseBufferOffset(propertySizesInBytes.informationElementLength);
+				console.log(`informationElementLength: ${informationElementLength}`);
+
+				determineMessageType({ informationElementID, messageTracker });
+
+				await processBuffer({
+					buffer: buffer.subarray(
+						bufferOffset,
+						bufferOffset + informationElementLength
+					),
+					iei: informationElementID,
+					messageTracker,
+					informationElementLength,
+				});
+
+				bufferOffset += informationElementLength;
+			}
+
+			if (
+				messageTracker.messageBytes.currentNumberOfBytes >=
+				messageTracker.messageBytes.expectedNumberOfBytes
+			) {
+				await handleParsedMessage({ messageTracker });
+				resetMessageTracker({ messageTracker });
+			}
+		} catch (error) {
+			console.log(`🟥 Data Error: ${error.message}`); // TODO: Implement winston CloudWatch Logs
 			resetMessageTracker({ messageTracker });
 		}
 	});
 
 	socket.on('error', (error) => {
-		console.error('🟥 Socket Error: ', error); // TODO: Implement winston CloudWatch Logs
+		console.log('🟥 Socket Error: ', error); // TODO: Implement winston CloudWatch Logs
 	});
 
 	socket.on('close', () => {

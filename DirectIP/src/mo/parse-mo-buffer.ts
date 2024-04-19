@@ -16,7 +16,7 @@ export interface IParsedMOMessage {
 export interface IParseMOBufferMethodArgs {
 	buffer: Buffer;
 	messageTracker: IMessageTracker;
-	informationElementLength?: number;
+	informationElementLength: number;
 }
 
 export type ParseMOBufferMethod = (
@@ -42,8 +42,6 @@ export const callParseMOBufferMethod = async ({
 	messageTracker,
 	informationElementLength,
 }: ICallParseMOBufferMethod): Promise<void> => {
-	messageTracker.messageType = 'MO';
-
 	await (parseMOBufferMethods[iei] as ParseMOBufferMethod)({
 		buffer,
 		messageTracker,

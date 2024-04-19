@@ -17,7 +17,9 @@ export const saveParsedMOMessage = async ({
 		throw new Error(`🟥 Missing Payload: ${JSON.stringify(parsedMOMessage)}`);
 	}
 
-	console.log('🚀 Savings Parsed MO Message...');
+	console.log(
+		`🚀 Saving Parsed MO Message...\n${JSON.stringify(parsedMOMessage)}`
+	);
 
 	// TODO: Call API
 };

@@ -4,7 +4,9 @@ export const convertToHexArray = (value: string | number) => {
 			return Buffer.from(value.split('').map((char) => char.charCodeAt(0))); // NOTE: This Will Be Implemented In An External Program
 		}
 		case 'number': {
-			return Buffer.from([0x01, 0x02, 0x03, 0x04]); // TODO: Write Complete Method number to Buffer (This Will Be Implemented In An External Program)
+			const buffer = Buffer.alloc(2);
+			buffer.writeUInt16BE(value, 0); // NOTE: Only For 2 Byte Buffer
+			return buffer;
 		}
 	}
 };

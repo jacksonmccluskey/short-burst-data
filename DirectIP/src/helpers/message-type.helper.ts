@@ -10,24 +10,28 @@ export const determineMessageType = ({
 	informationElementID: IEI;
 	messageTracker: IMessageTracker;
 }) => {
-	switch (informationElementID) {
-		case IEI.MO_HEADER:
-		case IEI.MO_PAYLOAD:
-		case IEI.MO_LOCATION_INFORMATION: {
-			messageTracker.messageType = 'MO';
-			break;
-		}
-		case IEI.MT_HEADER:
-		case IEI.MT_PAYLOAD: {
-			messageTracker.messageType = 'MT';
-			break;
-		}
-		case IEI.MT_CONFIRMATION_MESSAGE: {
-			messageTracker.messageType = 'MC';
-			break;
-		}
-		default: {
-			throw new Error(`Invalid IEI: ${informationElementID}`);
+	if (messageTracker.messageType == undefined) {
+		switch (informationElementID) {
+			case IEI.MO_HEADER:
+			case IEI.MO_PAYLOAD:
+			case IEI.MO_LOCATION_INFORMATION: {
+				messageTracker.messageType = 'MO';
+				break;
+			}
+			case IEI.MT_HEADER:
+			case IEI.MT_PAYLOAD: {
+				messageTracker.messageType = 'MT';
+				break;
+			}
+			case IEI.MT_CONFIRMATION_MESSAGE: {
+				messageTracker.messageType = 'MC';
+				break;
+			}
+			default: {
+				throw new Error(`Invalid IEI: ${informationElementID}`);
+			}
 		}
 	}
+
+	console.log(`messageType: ${messageTracker.messageType}`);
 };

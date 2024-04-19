@@ -1,69 +1,85 @@
+import { propertySizesInBytes } from '../config/property-size.config';
 import {
 	IParseMOBufferMethodArgs,
 	ParseMOBufferMethod,
 } from './parse-mo-buffer';
 
 export interface IMOHeader {
-	CDR: number;
-	IMEI: string;
-	sessionStatus: number;
-	MTMSN: number;
-	MOMSN: number;
-	timeOfSession: Date;
+	CDR: number; // 4 Byte [unsigned integer]
+	IMEI: string; // 15 Byte [char]
+	sessionStatus: number; // 1 Byte [unsigned char]
+	MTMSN: number; // 2 Byte [unsigned short]
+	MOMSN: number; // 2 Byte [unsigned short]
+	timeOfSession: Date; // 4 Byte [unsigned integer]
 }
 
 export const parseMOHeader: ParseMOBufferMethod = async ({
 	buffer,
 	messageTracker,
 }: IParseMOBufferMethodArgs): Promise<void> => {
-	let offset = 0;
+	if (messageTracker.parsedMOMessage?.moHeader !== undefined) {
+		throw new Error('MO Header Already Defined. Potential Double Message.');
+	}
 
-	const cdrReference = buffer.readUInt32BE(offset);
+	if (buffer.length < propertySizesInBytes.moHeader.length) {
+		throw new Error('Not Enough Buffer To Parse MO Header');
+	}
+
+	let bufferOffset = 0;
+
+	const cdrReference = buffer.readUInt32BE(bufferOffset);
 	console.log(`cdrReference: ${cdrReference}`);
 	if (!cdrReference) {
 		console.log('Invalid cdrReference');
 		return;
 	}
-	offset += 4;
+	bufferOffset += 4;
+	messageTracker.messageBytes.currentNumberOfBytes += 4;
 
-	const imei = buffer.toString('utf8').slice(offset, offset + 15);
+	const imei = buffer.toString('utf8').slice(bufferOffset, bufferOffset + 15);
 	console.log(`imei: ${imei}`);
 	if (!imei) {
 		console.log('Invalid imei');
 		return;
 	}
-	offset += 15;
+	bufferOffset += 15;
+	messageTracker.messageBytes.currentNumberOfBytes += 15;
 
-	const sessionStatus = buffer.readUInt8(offset);
+	const sessionStatus = buffer.readUInt8(bufferOffset);
 	console.log(`sessionStatus: ${sessionStatus}`);
 	if (sessionStatus === undefined || sessionStatus < 0) {
 		console.log('Invalid sessionStatus');
 		return;
 	}
-	offset += 1;
+	bufferOffset += 1;
+	messageTracker.messageBytes.currentNumberOfBytes += 1;
 
-	const momsn = buffer.readUInt16BE(offset);
+	const momsn = buffer.readUInt16BE(bufferOffset);
 	console.log(`momsn: ${momsn}`);
 	if (momsn === undefined || momsn < 0) {
 		console.log('Invalid momsn');
 		return;
 	}
-	offset += 2;
+	bufferOffset += 2;
+	messageTracker.messageBytes.currentNumberOfBytes += 2;
 
-	const mtmsn = buffer.readUInt16BE(offset);
+	const mtmsn = buffer.readUInt16BE(bufferOffset);
 	console.log(`mtmsn: ${mtmsn}`);
 	if (mtmsn === undefined || mtmsn < 0) {
 		console.log('Invalid mtmsn');
 		return;
 	}
-	offset += 2;
+	bufferOffset += 2;
+	messageTracker.messageBytes.currentNumberOfBytes += 2;
 
-	const timeOfSession = buffer.readUInt32BE(offset);
+	const timeOfSession = buffer.readUInt32BE(bufferOffset);
 	console.log(`timeOfSession: ${timeOfSession}`);
 	if (!timeOfSession) {
 		console.log('Invalid timeOfSession');
 		return;
 	}
+	bufferOffset += 4;
+	messageTracker.messageBytes.currentNumberOfBytes += 4;
 
 	if (messageTracker.parsedMOMessage == undefined) {
 		messageTracker.parsedMOMessage = {};

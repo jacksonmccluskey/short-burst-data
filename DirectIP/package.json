@@ -5,10 +5,8 @@
   "scripts": {
     "directip-api": "npx ts-node ./src/api/directip.api.ts",
     "directip-server": "npx ts-node ./src/directip-server.ts",
-    "directip-client": "npx ts-node ./src/directip-client.ts",
-    "test directip-api": "npx ts-node ./src/testers/directip-api.tester.ts",
-    "test directip-server": "npx ts-node ./src/testers/directip-server.tester.ts",
-    "test directip-client": "npx ts-node ./src/testers/directip-client.tester.ts"
+    "test-directip-api": "npx ts-node ./src/testers/directip-api.tester.ts",
+    "test-directip-server": "npx ts-node ./src/testers/directip-server.tester.ts"
   },
   "repository": {
     "type": "git",

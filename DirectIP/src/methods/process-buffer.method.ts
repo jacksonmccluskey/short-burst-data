@@ -33,11 +33,17 @@ export const processBuffer = async ({
 	informationElementLength,
 }: IProcessBufferArgs) => {
 	if (messageTracker.messageType) {
+		if (buffer.length < informationElementLength) {
+			throw new Error('Not Enough Buffer To Go Around');
+		}
+
 		await handleProcessBufferMethods[messageTracker.messageType]({
 			buffer,
 			iei,
 			messageTracker,
 			informationElementLength,
 		});
+	} else {
+		throw new Error('No Message Type Defined');
 	}
 };
