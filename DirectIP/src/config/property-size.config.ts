@@ -3,12 +3,16 @@ export const propertySizesInBytes = {
 	overallMessageLength: 2,
 	informationElementID: 1,
 	informationElementLength: 2,
-	moHeader: {
-		length: 28,
+	moMessage: {
+		moHeader: {
+			length: 28,
+		},
+		moPayload: {}, // NOTE: This Is Variable Per Message
+		moLocation: {
+			length: 11,
+		},
+		// TODO: Add Remainder Properties
 	},
-	moPayload: {}, // NOTE: This Is Variable Per Message
-	moLocation: {
-		length: 11,
-	},
-	// TODO: Add Remainder Properties
+	mtMessage: {},
+	mtConfirmationMessage: {},
 };

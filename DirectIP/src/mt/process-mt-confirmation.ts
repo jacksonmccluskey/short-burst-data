@@ -1,7 +1,3 @@
-import {
-	IIridiumOutMessageRequest,
-	IIridiumOutMessageResponse,
-} from '../api/types.api';
 import { IEI } from '../helpers/information-element-identifier.helper';
 import { IMessageTracker } from '../helpers/message-tracker.helper';
 

@@ -8,11 +8,3 @@ export interface IIridiumOutMessageRequest {
 	IsProcessed: IsIridiumOutMessageProcessed;
 	ProcessNote?: string | null;
 }
-
-export type IridiumOutMessageResponseProcessNote = 'SUCCESS' | 'FAIL';
-
-export interface IIridiumOutMessageResponse {
-	IridiumOutId: number;
-	IsProcessed: number;
-	ProcessNote: IridiumOutMessageResponseProcessNote;
-}

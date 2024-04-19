@@ -62,11 +62,11 @@ directIPServer = net.createServer((socket: net.Socket) => {
 					throw new Error('Not Enough Information Bytes');
 				}
 
-				const informationElementID = buffer.readUInt8(bufferOffset); // 1 Byte [char]
+				const informationElementID = buffer.readUInt8(bufferOffset);
 				increaseBufferOffset(propertySizesInBytes.informationElementID);
 				console.log(`informationElementID: ${informationElementID}`);
 
-				const informationElementLength = buffer.readUInt16BE(bufferOffset); // 2 Byte [unsigned short]
+				const informationElementLength = buffer.readUInt16BE(bufferOffset);
 				increaseBufferOffset(propertySizesInBytes.informationElementLength);
 				console.log(`informationElementLength: ${informationElementLength}`);
 

@@ -21,7 +21,7 @@ export const parseMOHeader: ParseMOBufferMethod = async ({
 		throw new Error('MO Header Already Defined. Potential Double Message.');
 	}
 
-	if (buffer.length < propertySizesInBytes.moHeader.length) {
+	if (buffer.length < propertySizesInBytes.moMessage.moHeader.length) {
 		throw new Error('Not Enough Buffer To Parse MO Header');
 	}
 

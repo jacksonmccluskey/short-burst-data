@@ -1,6 +1,7 @@
 import { Express } from 'express';
 import { isValidMTRequest } from '../mt/is-valid-mt-request';
 import { sendMTMessage } from '../mt/send-mt-message';
+import { convertToHexArray } from '../helpers/convert-to-hex.helper';
 
 export const apiRoutes = (app: Express) => {
 	app.post('/mt', async (req, res) => {
@@ -28,12 +29,20 @@ export const apiRoutes = (app: Express) => {
 					throw new Error(missingExpectedPropertiesMessage);
 				}
 
-				// TODO: Calculate Overall Message Length
+				const messageBuffer = Buffer.from(Message, 'base64');
+				const headerBuffer = Buffer.from(Header, 'base64');
+				const payloadBuffer = Buffer.from(Payload, 'base64');
 
 				await sendMTMessage({
-					message: Buffer.from([0x01, ...Buffer.from(Message, 'base64')]), // TODO: Implement Protocol Revision Number
-					header: Buffer.from(Header, 'base64'),
-					payload: Buffer.from(Header, 'base64'),
+					message: Buffer.from([
+						0x01,
+						...convertToHexArray(
+							messageBuffer.length + headerBuffer.length + payloadBuffer.length
+						),
+						...messageBuffer,
+					]),
+					header: headerBuffer,
+					payload: payloadBuffer,
 				});
 
 				messagesProcessed++;

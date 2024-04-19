@@ -1,25 +1,32 @@
+import { apiConfig } from '../config/api.config';
 import { IHandleParsedMessageMethodArgs } from '../methods/handle-parsed-message.method';
+import axios from 'axios';
+import { validateParsedMOMessage } from './validate-parsed-mo-message';
 
 export const saveParsedMOMessage = async ({
 	messageTracker,
 }: IHandleParsedMessageMethodArgs): Promise<void> => {
 	const { parsedMOMessage } = messageTracker;
 
-	if (parsedMOMessage == undefined) {
-		throw new Error('🟥 Message Failed To Parse');
-	}
-
-	if (parsedMOMessage.moHeader == undefined) {
-		throw new Error(`🟥 Missing Header: ${JSON.stringify(parsedMOMessage)}`);
-	}
-
-	if (parsedMOMessage.moPayload == undefined) {
-		throw new Error(`🟥 Missing Payload: ${JSON.stringify(parsedMOMessage)}`);
-	}
+	validateParsedMOMessage({ parsedMOMessage });
 
 	console.log(
 		`🚀 Saving Parsed MO Message...\n${JSON.stringify(parsedMOMessage)}`
 	);
 
-	// TODO: Call API
+	try {
+		const { data } = await axios.post(
+			apiConfig.saveMOMessage,
+			parsedMOMessage,
+			{
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			}
+		);
+
+		console.log(data);
+	} catch (error) {
+		console.log(error);
+	}
 };

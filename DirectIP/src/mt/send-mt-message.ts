@@ -26,6 +26,29 @@ export const sendMTMessage = async ({
 	const socket = net.createConnection(
 		{ port: socketPort, host: socketHost },
 		() => {
+			// Expected Buffer Stream
+			/*
+			[
+				0x01, // protocolRevisionNumber
+				0x00, // overallMessageLength
+				0x00, // overallMessageLength
+				0x41, // mtHeaderIEI
+				0x00, // mtHeaderLength
+				0x00, // mtHeaderLength 
+				0x00, // uniqueClientMessageID
+				0x00, // uniqueClientMessageID
+				0x00, // uniqueClientMessageID
+				0x00, // uniqueClientMessageID
+				0x00, // x 15 Bytes IMEI
+				0x00, // mtDispositionFlags
+				0x00, // mtDispositionFlags
+				0x42, // mtPayloadIEI
+				0x00, // mtPayloadLength
+				0x00, // mtPayloadLength
+				0x00, // x N Bytes mtPayload
+			]
+			*/
+
 			const writtenMessage = socket.write(message);
 			const writtenHeader = socket.write(header);
 			const writtenPayload = socket.write(payload);
