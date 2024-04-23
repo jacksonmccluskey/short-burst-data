@@ -40,7 +40,7 @@ export const apiRoutes = (app: Express) => {
 					mtPayloadBuffer,
 				});
 
-				processedMessageIDs.push('the-id');
+				processedMessageIDs.push(mtHeader.uniqueClientMessageID);
 
 				messagesProcessed++;
 			}
