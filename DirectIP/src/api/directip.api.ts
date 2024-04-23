@@ -8,7 +8,7 @@ const app = express();
 
 app.use(bodyParser.json());
 
-apiRoutes(app);
+apiRoutes(app); // TODO: Add /api Route Name
 
 const apiPort = process.env.API_PORT ? parseInt(process.env.API_PORT) : 1234;
 

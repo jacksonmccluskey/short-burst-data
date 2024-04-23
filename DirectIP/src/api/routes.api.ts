@@ -2,9 +2,12 @@ import { Express } from 'express';
 import { isValidMTRequest } from '../mt/is-valid-mt-request';
 import { sendMTMessage } from '../mt/send-mt-message';
 import { convertToHexArray } from '../helpers/convert-to-hex.helper';
+import { convertMTMessageToBuffer } from '../mt/convert-mt-message-to-buffer';
+import { IMTHeader } from '../mt/parse-mt-header';
+import { IMTPayload } from '../mt/parse-mt-payload';
 
 export const apiRoutes = (app: Express) => {
-	app.post('/mt', async (req, res) => {
+	app.post('/api/mt', async (req, res) => {
 		try {
 			if (!isValidMTRequest(req, res)) {
 				throw new Error('Invalid MT Message Request');
@@ -12,16 +15,12 @@ export const apiRoutes = (app: Express) => {
 
 			let messagesProcessed = 0;
 
-			while (messagesProcessed < req.body.length) {
-				const { IridiumOutId, Header, Message, Payload } =
-					req.body[messagesProcessed];
+			const processedMessageIDs = [];
 
-				if (
-					IridiumOutId == undefined ||
-					Header == undefined ||
-					Message == undefined ||
-					Payload == undefined
-				) {
+			while (messagesProcessed < req.body.length) {
+				const { mtHeader, mtPayload } = req.body[messagesProcessed];
+
+				if (!mtHeader || !mtPayload) {
 					const missingExpectedPropertiesMessage = `🟥 1 Or More Elements Missing Expected Properties: ${JSON.stringify(
 						req.body[messagesProcessed]
 					)}`;
@@ -29,27 +28,26 @@ export const apiRoutes = (app: Express) => {
 					throw new Error(missingExpectedPropertiesMessage);
 				}
 
-				const messageBuffer = Buffer.from(Message, 'base64');
-				const headerBuffer = Buffer.from(Header, 'base64');
-				const payloadBuffer = Buffer.from(Payload, 'base64');
+				const { mtMessageBuffer, mtHeaderBuffer, mtPayloadBuffer } =
+					convertMTMessageToBuffer({
+						mtHeader: mtHeader as IMTHeader,
+						mtPayload: mtPayload as IMTPayload,
+					});
 
 				await sendMTMessage({
-					message: Buffer.from([
-						0x01,
-						...convertToHexArray(
-							messageBuffer.length + headerBuffer.length + payloadBuffer.length
-						),
-						...messageBuffer,
-					]),
-					header: headerBuffer,
-					payload: payloadBuffer,
+					mtMessageBuffer,
+					mtHeaderBuffer,
+					mtPayloadBuffer,
 				});
+
+				processedMessageIDs.push('the-id');
 
 				messagesProcessed++;
 			}
 
 			res.json({
 				message: `✅ ${messagesProcessed} MT Messages Received & Processed`,
+				processedMessageIDs,
 			});
 		} catch (error) {
 			console.error('🟥 Error Processing MT Messages:', error);
@@ -57,7 +55,7 @@ export const apiRoutes = (app: Express) => {
 		}
 	});
 
-	app.post('/got-or-not', (req, res) => {
+	app.post('/api/got-or-not', (req, res) => {
 		// NOTE: This Is For Testing Purposes Only
 		if (req.body) {
 			res.status(200).json({ message: '✅ GOT', status: 1 });

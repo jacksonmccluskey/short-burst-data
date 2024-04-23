@@ -1,1 +1,4 @@
-export interface IMTPayload {}
+export interface IMTPayload {
+	payload: string;
+	payloadLength: number;
+}
