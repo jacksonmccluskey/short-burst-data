@@ -25,6 +25,8 @@ NOTE: All destinations will be provisioned through Iridium SPNet Pro (https://sp
 
 This is the industry standard communication protocol for Iridium SBD communication. "The advantage DirectIP has over the existing email protocol is the efficiency with which DirectIP transfers SBD between the Iridium Gateway and client applications and smaller latencies. DirectIP is comprised of a specialized socket-oriented communications protocol which uses direct connections between the Iridium gateway and the client applications. The DirectIP protocol consists of separate gateway components for the transfer of MO and MT messages. The interaction can be likened to client/server architecture. The MO and MT DirectIP protocols utilize bi-directional TCP/IP socket connections." (NAL Research Corporation, 2006)
 
+![DirectIP-Client-Server-Architecture](./DirectIP/DirectIP-Client-Server-Architecture.png)
+
 **MO Message Buffer**
 
 ```
