@@ -1,4 +1,4 @@
-import { IEI } from '../helpers/information-element-identifier.helper';
+import { IEI } from '../fields/information-element-identifier.field';
 import { IMessageTracker } from '../helpers/message-tracker.helper';
 import { IMTHeader } from './parse-mt-header';
 import { IMTPayload } from './parse-mt-payload';

@@ -81,16 +81,20 @@ export const parseMOHeader: ParseMOBufferMethod = async ({
 	bufferOffset += 4;
 	messageTracker.messageBytes.currentNumberOfBytes += 4;
 
-	if (messageTracker.parsedMOMessage == undefined) {
-		messageTracker.parsedMOMessage = {};
-	}
-
-	messageTracker.parsedMOMessage.moHeader = {
+	const moHeader: IMOHeader = {
 		CDR: cdrReference,
 		IMEI: imei,
 		sessionStatus,
 		MTMSN: mtmsn,
 		MOMSN: momsn,
-		timeOfSession: new Date(timeOfSession * 1000), // timeOfSession UNIX Time in Seconds; Date UNIX Time in Milliseconds = timeOfSession * 1000
+		timeOfSession: new Date(timeOfSession * 1000), // NOTE: timeOfSession UNIX Time in Seconds; Date UNIX Time in Milliseconds = timeOfSession * 1000
 	};
+
+	if (messageTracker.parsedMOMessage == undefined) {
+		messageTracker.parsedMOMessage = { moHeader };
+	} else if (messageTracker.parsedMOMessage.moHeader == undefined) {
+		messageTracker.parsedMOMessage.moHeader = moHeader;
+	} else {
+		throw new Error('MO Message Already Defined'); // NOTE: Duplicate Check
+	}
 };

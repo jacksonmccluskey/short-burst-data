@@ -22,26 +22,25 @@ export const sendMTMessage = async ({
 	const socket = net.createConnection(
 		{ port: socketPort, host: socketHost },
 		() => {
-			// Expected Buffer Stream
 			/*
 			[
-				0x01, // protocolRevisionNumber
-				0x00, // overallMessageLength
-				0x00, // overallMessageLength
-				0x41, // mtHeaderBufferIEI
-				0x00, // mtHeaderBufferLength
-				0x00, // mtHeaderBufferLength 
-				0x00, // uniqueClientMessageID
-				0x00, // uniqueClientMessageID
-				0x00, // uniqueClientMessageID
-				0x00, // uniqueClientMessageID
-				0x00, // x 15 Bytes IMEI
-				0x00, // mtDispositionFlags
-				0x00, // mtDispositionFlags
-				0x42, // mtPayloadBufferIEI
-				0x00, // mtPayloadBufferLength
-				0x00, // mtPayloadBufferLength
-				0x00, // x N Bytes mtPayloadBuffer
+				0x01, // Protocol Revision Number = protocolRevisionNumber
+				0x00, // Overall Message Length = overallMessageLength
+				0x00, // Overall Message Length = overallMessageLength
+				0x41, // MT Header IEI
+				0x00, // MT Header Length
+				0x00, // MT Header Length
+				0x00, // Unique Client Message ID = uniqueClientMessageID
+				... x4
+				0x00, // IMEI = IMEI
+				... x 15
+				0x00, // MT Disposition Flags
+				0x00, // MT Disposition Flags
+				0x42, // MT Payload IEI
+				0x00, // MT Payload Length (N)
+				0x00, // MT Payload Length (N)
+				0x00, // MT Payload = payload
+				... x N
 			]
 			*/
 

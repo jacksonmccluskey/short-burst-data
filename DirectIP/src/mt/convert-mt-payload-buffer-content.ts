@@ -1,3 +1,4 @@
+import { convertStringToBuffer } from '../helpers/convert-value-to-buffer.helper';
 import { IMTPayload } from './parse-mt-payload';
 
 export const convertMTPayloadBufferContent = ({
@@ -5,5 +6,5 @@ export const convertMTPayloadBufferContent = ({
 }: {
 	mtPayload: IMTPayload;
 }): Buffer => {
-	return Buffer.from([]);
+	return convertStringToBuffer({ value: mtPayload.payload });
 };

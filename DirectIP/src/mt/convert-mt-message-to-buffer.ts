@@ -1,7 +1,7 @@
-import { convertToHexArray } from '../helpers/convert-to-hex.helper';
 import { convertMTHeaderBufferContent } from './convert-mt-header-buffer-content';
 import { convertMTPayloadBufferContent } from './convert-mt-payload-buffer-content';
 import { IParsedMTMessage } from './process-mt-message';
+import { convertNumberToBuffer } from '../helpers/convert-value-to-buffer.helper';
 
 export interface IConvertedMTMessageToBuffer {
 	mtMessageBuffer: Buffer;
@@ -34,7 +34,10 @@ export const convertMTMessageToBuffer = ({
 
 	const mtHeaderBuffer = Buffer.from([
 		0x41,
-		...convertToHexArray(mtHeaderBufferContent.length),
+		...convertNumberToBuffer({
+			value: mtHeaderBufferContent.length,
+			bufferSize: 2,
+		}),
 		...mtHeaderBufferContent,
 	]);
 
@@ -49,7 +52,10 @@ export const convertMTMessageToBuffer = ({
 
 	const mtPayloadBuffer = Buffer.from([
 		0x42,
-		...convertToHexArray(mtHeaderBufferContent.length),
+		...convertNumberToBuffer({
+			value: mtPayloadBufferContent.length,
+			bufferSize: 2,
+		}),
 		...mtPayloadBufferContent,
 	]);
 
@@ -60,7 +66,10 @@ export const convertMTMessageToBuffer = ({
     */
 	const mtMessageBuffer = Buffer.from([
 		0x01,
-		...convertToHexArray(mtHeaderBuffer.length + mtPayloadBuffer.length),
+		...convertNumberToBuffer({
+			value: mtHeaderBuffer.length + mtPayloadBuffer.length,
+			bufferSize: 2,
+		}),
 	]);
 
 	return { mtMessageBuffer, mtHeaderBuffer, mtPayloadBuffer };

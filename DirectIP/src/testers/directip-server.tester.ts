@@ -1,7 +1,10 @@
 require('dotenv').config();
 
 import net from 'net';
-import { convertToHexArray } from '../helpers/convert-to-hex.helper';
+import {
+	convertStringToBuffer,
+	convertNumberToBuffer,
+} from '../helpers/convert-value-to-buffer.helper';
 
 const socketPort: number = process.env.SOCKET_PORT
 	? parseInt(process.env.SOCKET_PORT)
@@ -25,7 +28,10 @@ const socket = net.createConnection(
 
 		const moHeader: Buffer = Buffer.from([
 			0x01,
-			...convertToHexArray(moHeaderContent.length),
+			...convertNumberToBuffer({
+				value: moHeaderContent.length,
+				bufferSize: 2,
+			}),
 			...moHeaderContent,
 		]);
 
@@ -35,7 +41,10 @@ const socket = net.createConnection(
 
 		const moPayload: Buffer = Buffer.from([
 			0x02,
-			...convertToHexArray(moPayloadContent.length),
+			...convertNumberToBuffer({
+				value: moPayloadContent.length,
+				bufferSize: 2,
+			}),
 			...moPayloadContent,
 		]);
 
@@ -45,7 +54,10 @@ const socket = net.createConnection(
 
 		const moLocation: Buffer = Buffer.from([
 			0x03,
-			...convertToHexArray(moLocationContent.length),
+			...convertNumberToBuffer({
+				value: moLocationContent.length,
+				bufferSize: 2,
+			}),
 			...moLocationContent,
 		]);
 
@@ -88,9 +100,10 @@ const socket = net.createConnection(
 		socket.write(
 			Buffer.from([
 				0x01,
-				...convertToHexArray(
-					moHeader.length + moPayload.length + moLocation.length
-				),
+				...convertNumberToBuffer({
+					value: moHeader.length + moPayload.length + moLocation.length,
+					bufferSize: 2,
+				}),
 				...moHeader,
 			])
 		);

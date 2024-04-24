@@ -1,4 +1,4 @@
-import { IEI } from '../helpers/information-element-identifier.helper';
+import { IEI } from '../fields/information-element-identifier.field';
 import { IMOHeader, parseMOHeader } from './parse-mo-header';
 import {
 	IMOLocationInformation,

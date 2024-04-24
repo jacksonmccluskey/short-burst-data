@@ -13,6 +13,13 @@ export const propertySizesInBytes = {
 		},
 		// TODO: Add Remainder Properties
 	},
-	mtMessage: {},
+	mtMessage: {
+		mtHeader: {
+			length: 21,
+			uniqueClientMessageID: 4,
+			IMEI: 15,
+			dispositionFlag: 2,
+		},
+	},
 	mtConfirmationMessage: {},
 };

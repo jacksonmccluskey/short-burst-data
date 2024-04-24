@@ -1,9 +1,10 @@
 import { MessageType } from '../helpers/message-type.helper';
-import { IEI } from '../helpers/information-element-identifier.helper';
+import { IEI } from '../fields/information-element-identifier.field';
 import { IMessageTracker } from '../helpers/message-tracker.helper';
 import { callParseMOBufferMethod } from '../mo/parse-mo-buffer';
 import { processMTConfirmationMessage } from '../mt/process-mt-confirmation';
 import { processMTMessage } from '../mt/process-mt-message';
+import { callParseMTBufferMethod } from '../mt/parse-mt-buffer';
 
 export interface IHandleProcessBufferMethodArgs {}
 
@@ -15,7 +16,7 @@ export const handleProcessBufferMethods: {
 	[keys in MessageType]: HandleProcessBufferMethod;
 } = {
 	MO: callParseMOBufferMethod,
-	MT: processMTMessage,
+	MT: callParseMTBufferMethod,
 	MC: processMTConfirmationMessage,
 };
 

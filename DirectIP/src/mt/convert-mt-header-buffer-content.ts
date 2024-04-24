@@ -1,3 +1,4 @@
+import { convertStringToBuffer } from '../helpers/convert-value-to-buffer.helper';
 import { IMTHeader } from './parse-mt-header';
 
 export const convertMTHeaderBufferContent = ({
@@ -18,12 +19,9 @@ export const convertMTHeaderBufferContent = ({
     */
 
 	return Buffer.from([
+		...convertStringToBuffer({ value: mtHeader.uniqueClientMessageID }),
+		...convertStringToBuffer({ value: mtHeader.IMEI }),
 		0x00,
-		0x00,
-		0x00,
-		0x00,
-		...'123456789123456'.split('').map((char) => char.charCodeAt(0)),
-		0x00,
-		0x00,
+		0x02,
 	]);
 };

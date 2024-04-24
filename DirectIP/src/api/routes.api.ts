@@ -1,7 +1,6 @@
 import { Express } from 'express';
 import { isValidMTRequest } from '../mt/is-valid-mt-request';
 import { sendMTMessage } from '../mt/send-mt-message';
-import { convertToHexArray } from '../helpers/convert-to-hex.helper';
 import { convertMTMessageToBuffer } from '../mt/convert-mt-message-to-buffer';
 import { IMTHeader } from '../mt/parse-mt-header';
 import { IMTPayload } from '../mt/parse-mt-payload';
@@ -21,7 +20,7 @@ export const apiRoutes = (app: Express) => {
 				const { mtHeader, mtPayload } = req.body[messagesProcessed];
 
 				if (!mtHeader || !mtPayload) {
-					const missingExpectedPropertiesMessage = `🟥 1 Or More Elements Missing Expected Properties: ${JSON.stringify(
+					const missingExpectedPropertiesMessage = `🟥 1 Or More Missing Properties: ${JSON.stringify(
 						req.body[messagesProcessed]
 					)}`;
 
