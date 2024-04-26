@@ -16,6 +16,6 @@ export const validateParsedMOMessage = ({
 	}
 
 	if (parsedMOMessage.moPayload == undefined) {
-		throw new Error(`🟥 Missing Payload: ${JSON.stringify(parsedMOMessage)}`);
+		console.log(`🟥 Missing Payload: ${JSON.stringify(parsedMOMessage)}`); // TODO: Send Payload As NULL
 	}
 };

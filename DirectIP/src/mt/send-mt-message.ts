@@ -1,4 +1,7 @@
 import net from 'net';
+import { socketOnData } from '../methods/socket-on-data.method';
+import { IMessageTracker } from '../helpers/message-tracker.helper';
+import { resetMessageTracker } from '../helpers/reset-message-tracker';
 
 interface ISendMTMessage {
 	mtMessageBuffer: Buffer;
@@ -50,7 +53,22 @@ export const sendMTMessage = async ({
 		}
 	);
 
-	socket.on('data', (buffer: Buffer) => {});
+	const messageTracker: IMessageTracker = {
+		messageBytes: { currentNumberOfBytes: 0, expectedNumberOfBytes: 0 },
+	};
+
+	socketOnData({ socket, messageTracker });
+
+	socket.on('error', (error) => {
+		console.log('🟥 Socket Error: ', error); // TODO: Implement winston CloudWatch Logs
+		resetMessageTracker({ messageTracker });
+		socket.destroy();
+	});
+
+	socket.on('close', () => {
+		console.log('⬜ Client Disconnected'); // TODO: Implement winston CloudWatch Logs
+		resetMessageTracker({ messageTracker });
+	});
 };
 
 /*

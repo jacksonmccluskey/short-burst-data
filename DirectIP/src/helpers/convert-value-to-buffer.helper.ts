@@ -21,15 +21,15 @@ export const convertNumberToBuffer = ({
 
 	switch (bufferSize) {
 		case 1: {
-			buffer.writeUInt8(value, 0);
+			buffer.writeUInt8(value);
 			break;
 		}
 		case 2: {
-			buffer.writeUInt16BE(value, 0);
+			buffer.writeUInt16BE(value);
 			break;
 		}
 		case 4: {
-			buffer.writeUInt32BE(value, 0);
+			buffer.writeUInt32BE(value);
 			break;
 		}
 	}

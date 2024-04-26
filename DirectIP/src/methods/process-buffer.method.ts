@@ -4,10 +4,7 @@ import { callParseMOBufferMethod } from '../mo/parse-mo-buffer';
 import { processMTConfirmationMessage } from '../mt-confirmation/process-mt-confirmation';
 import { callParseMTBufferMethod } from '../mt/parse-mt-buffer';
 import { IEI } from '../fields/information-element-identifier.field';
-import {
-	IBufferTracker,
-	increaseBufferOffset,
-} from '../helpers/buffer-tracker.helper';
+import { IBufferTracker } from '../helpers/buffer-tracker.helper';
 
 export interface IHandleProcessBufferMethodArgs {
 	buffer: Buffer;

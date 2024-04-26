@@ -2,18 +2,8 @@ require('dotenv').config();
 
 import net from 'net';
 import { IMessageTracker } from './helpers/message-tracker.helper';
-import { handleParsedMessage } from './methods/handle-parsed-message.method';
 import { resetMessageTracker } from './helpers/reset-message-tracker';
-import { processBuffer } from './methods/process-buffer.method';
-import { determineMessageType } from './helpers/message-type.helper';
-import { propertySizesInBytes } from './config/property-size.config';
-import {
-	IBufferTracker,
-	increaseBufferOffset,
-} from './helpers/buffer-tracker.helper';
-import { initializeMessage } from './methods/initialize-message.method';
-import { validateInformationBytes } from './helpers/validate-information-bytes.helper';
-import { readBufferAsNumber } from './helpers/read-buffer.helper';
+import { socketOnData } from './methods/socket-on-data.method';
 
 let directIPServer: net.Server | null = null;
 
@@ -28,62 +18,12 @@ directIPServer = net.createServer((socket: net.Socket) => {
 		messageBytes: { expectedNumberOfBytes: 0, currentNumberOfBytes: 0 },
 	};
 
-	socket.on('data', async (buffer: Buffer) => {
-		const bufferTracker: IBufferTracker = {
-			offset: 0,
-		};
-
-		try {
-			initializeMessage({
-				buffer,
-				bufferTracker,
-				messageTracker,
-			});
-
-			while (bufferTracker.offset < buffer.length) {
-				const informationElementID = readBufferAsNumber({
-					buffer,
-					bufferTracker,
-					messageTracker,
-					numberOfBytes: propertySizesInBytes.informationElementID,
-				});
-
-				const informationElementLength = readBufferAsNumber({
-					buffer,
-					bufferTracker,
-					messageTracker,
-					numberOfBytes: propertySizesInBytes.informationElementLength,
-				});
-
-				determineMessageType({ informationElementID, messageTracker });
-
-				await processBuffer({
-					buffer,
-					bufferTracker,
-					informationElementID,
-					messageTracker,
-					informationElementLength,
-				});
-			}
-
-			if (
-				messageTracker.messageBytes.currentNumberOfBytes >=
-				messageTracker.messageBytes.expectedNumberOfBytes
-			) {
-				await handleParsedMessage({ messageTracker });
-				resetMessageTracker({ messageTracker });
-			}
-		} catch (error) {
-			console.log(`🟥 Data Error: ${error.message}`); // TODO: Implement winston CloudWatch Logs
-			resetMessageTracker({ messageTracker });
-		}
-
-		bufferTracker.offset = 0;
-	});
+	socketOnData({ socket, messageTracker });
 
 	socket.on('error', (error) => {
 		console.log('🟥 Socket Error: ', error); // TODO: Implement winston CloudWatch Logs
 		resetMessageTracker({ messageTracker });
+		socket.destroy();
 	});
 
 	socket.on('close', () => {
