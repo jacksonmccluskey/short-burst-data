@@ -1,12 +1,21 @@
 import { MessageType } from '../helpers/message-type.helper';
-import { IEI } from '../fields/information-element-identifier.field';
 import { IMessageTracker } from '../helpers/message-tracker.helper';
 import { callParseMOBufferMethod } from '../mo/parse-mo-buffer';
-import { processMTConfirmationMessage } from '../mt/process-mt-confirmation';
-import { processMTMessage } from '../mt/process-mt-message';
+import { processMTConfirmationMessage } from '../mt-confirmation/process-mt-confirmation';
 import { callParseMTBufferMethod } from '../mt/parse-mt-buffer';
+import { IEI } from '../fields/information-element-identifier.field';
+import {
+	IBufferTracker,
+	increaseBufferOffset,
+} from '../helpers/buffer-tracker.helper';
 
-export interface IHandleProcessBufferMethodArgs {}
+export interface IHandleProcessBufferMethodArgs {
+	buffer: Buffer;
+	bufferTracker: IBufferTracker;
+	informationElementID: IEI;
+	messageTracker: IMessageTracker;
+	informationElementLength: number;
+}
 
 export type HandleProcessBufferMethod = (
 	args: IHandleProcessBufferMethodArgs
@@ -22,14 +31,16 @@ export const handleProcessBufferMethods: {
 
 export interface IProcessBufferArgs {
 	buffer: Buffer;
-	iei: number;
+	bufferTracker: IBufferTracker;
+	informationElementID: number;
 	messageTracker: IMessageTracker;
 	informationElementLength: number;
 }
 
 export const processBuffer = async ({
 	buffer,
-	iei,
+	bufferTracker,
+	informationElementID,
 	messageTracker,
 	informationElementLength,
 }: IProcessBufferArgs) => {
@@ -40,10 +51,13 @@ export const processBuffer = async ({
 
 		await handleProcessBufferMethods[messageTracker.messageType]({
 			buffer,
-			iei,
+			bufferTracker,
+			informationElementID,
 			messageTracker,
 			informationElementLength,
 		});
+
+		console.log(`Buffer Processed...\n${JSON.stringify(messageTracker)}`);
 	} else {
 		throw new Error('No Message Type Defined');
 	}

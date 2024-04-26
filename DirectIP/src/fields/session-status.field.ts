@@ -34,3 +34,14 @@ export const getSessionStatusDefinition = (
 ): string => {
 	return sessionStatusDefinitions[sessionStatus];
 };
+
+export const getSessionStatusByValue = (
+	value: number
+): SessionStatus | undefined => {
+	for (const [_key, enumValue] of Object.entries(SessionStatus)) {
+		if (Number(enumValue) === value) {
+			return enumValue as SessionStatus;
+		}
+	}
+	return undefined;
+};

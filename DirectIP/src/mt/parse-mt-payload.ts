@@ -1,3 +1,6 @@
+import { propertySizesInBytes } from '../config/property-size.config';
+import { increaseBufferOffset } from '../helpers/buffer-tracker.helper';
+import { readBufferAsString } from '../helpers/read-buffer.helper';
 import { IParseMTBufferMethodArgs } from './parse-mt-buffer';
 
 export interface IMTPayload {
@@ -7,6 +10,7 @@ export interface IMTPayload {
 
 export const parseMTPayload = async ({
 	buffer,
+	bufferTracker,
 	messageTracker,
 	informationElementLength,
 }: IParseMTBufferMethodArgs): Promise<void> => {
@@ -14,26 +18,30 @@ export const parseMTPayload = async ({
 		throw new Error('MT Payload Already Defined. Potential Duplicate Message');
 	}
 
-	if (buffer.length < informationElementLength) {
+	if (buffer.length - bufferTracker.offset < informationElementLength) {
 		throw new Error('Not Enough Buffer To Parse MT Payload');
 	}
 
-	let bufferOffset = 0;
-
-	const payload = buffer
-		.toString('utf8')
-		.slice(bufferOffset, bufferOffset + informationElementLength);
-	console.log(`payload: ${payload}`);
+	const payload = readBufferAsString({
+		buffer,
+		bufferTracker,
+		messageTracker,
+		numberOfBytes: informationElementLength,
+	});
 
 	if (!payload.length || payload.length !== informationElementLength) {
 		console.log('Invalid payload');
 		return;
 	}
-	bufferOffset += payload.length;
-	messageTracker.messageBytes.currentNumberOfBytes += payload.length;
+
+	increaseBufferOffset({
+		bufferTracker,
+		messageTracker,
+		numberOfBytes: payload.length,
+	});
 
 	const mtPayload: IMTPayload = {
-		payloadLength: informationElementLength,
+		payloadLength: payload.length,
 		payload,
 	};
 

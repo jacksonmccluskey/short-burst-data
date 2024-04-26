@@ -1,17 +1,35 @@
+import { propertySizesInBytes } from '../config/property-size.config';
+import {
+	IBufferTracker,
+	increaseBufferOffset,
+} from '../helpers/buffer-tracker.helper';
+import {
+	NumberOfBytes,
+	readBufferAsNumber,
+} from '../helpers/read-buffer.helper';
 import {
 	IParseMOBufferMethodArgs,
 	ParseMOBufferMethod,
 } from './parse-mo-buffer';
 
 export interface IMOLocationInformation {
-	latitude: number; // See Docs
-	longitude: number; // See Docs
-	cepRadius: number; // 4 Byte [unsigned integer]
+	latitude: number;
+	longitude: number;
+	cepRadius: number;
 }
 
-const parseLocationIndicators = (
-	indicatorByte: number
-): { north?: number; east?: number } => {
+interface IParseLocationIndicatorsArgs {
+	indicatorByte: number;
+}
+
+interface IParseLocationIndicators {
+	north?: number;
+	east?: number;
+}
+
+const parseLocationIndicators = ({
+	indicatorByte,
+}: IParseLocationIndicatorsArgs): IParseLocationIndicators => {
 	if (indicatorByte < 0 || indicatorByte > 255) {
 		return {};
 	}
@@ -31,8 +49,8 @@ const parseLocationIndicators = (
 
 export const parseMOLocationInformation: ParseMOBufferMethod = async ({
 	buffer,
+	bufferTracker,
 	messageTracker,
-	informationElementLength,
 }: IParseMOBufferMethodArgs): Promise<void> => {
 	if (messageTracker.parsedMOMessage?.moLocationInformation !== undefined) {
 		throw new Error(
@@ -40,28 +58,35 @@ export const parseMOLocationInformation: ParseMOBufferMethod = async ({
 		);
 	}
 
-	let bufferOffset = 0;
+	const indicatorByte = readBufferAsNumber({
+		buffer,
+		bufferTracker,
+		messageTracker,
+		numberOfBytes: propertySizesInBytes.moMessage.moLocation.NSI,
+	});
 
-	const indicatorByte = buffer.readUInt8(bufferOffset);
-	bufferOffset += 1;
-
-	const { north, east } = parseLocationIndicators(indicatorByte);
+	const { north, east } = parseLocationIndicators({ indicatorByte });
 
 	if (north == undefined || east == undefined) {
-		console.log('No Indicators (NSI or EWI) Were Found.');
-		return;
+		throw new Error('No Indicators (NSI or EWI) Were Found.');
 	}
-	console.log(`north: ${north}; east: ${east}`);
 
-	const latitudeDegrees = buffer.readUInt8(bufferOffset);
-	bufferOffset += 1;
+	const latitudeDegrees = readBufferAsNumber({
+		buffer,
+		bufferTracker,
+		messageTracker,
+		numberOfBytes: propertySizesInBytes.moMessage.moLocation.latitudeDegrees,
+	});
 
-	console.log(`latitudeDegrees: ${latitudeDegrees}`);
-
-	const latitudeMinutes = buffer.readUInt16BE(bufferOffset);
-	bufferOffset += 2;
-
-	console.log(`latitudeMinutes: ${latitudeMinutes}`);
+	const latitudeMinutes = readBufferAsNumber({
+		buffer,
+		bufferTracker,
+		numberOfBytes: (propertySizesInBytes.moMessage.moLocation
+			.latitudeThousandsOfAMinuteMS +
+			propertySizesInBytes.moMessage.moLocation
+				.latitudeThousandsOfAMinuteLS) as NumberOfBytes,
+		messageTracker,
+	});
 
 	// TODO: Implement parsedLatitudeMinutes
 	//const parsedLatitudeMinutes = latitudeMinutes / 60000; // / (60 * 1000) = Convert Minutes To Decimal
@@ -70,17 +95,22 @@ export const parseMOLocationInformation: ParseMOBufferMethod = async ({
 		`${calculatedLatitudeDegrees}.${latitudeMinutes}`
 	); // TODO: + parsedLatitudeMinutes; // Calculate Decimal
 
-	console.log(`latitude: ${latitude}`);
+	const longitudeDegrees = readBufferAsNumber({
+		buffer,
+		bufferTracker,
+		messageTracker,
+		numberOfBytes: propertySizesInBytes.moMessage.moLocation.longitudeDegrees,
+	});
 
-	const longitudeDegrees = buffer.readUInt8(bufferOffset);
-	bufferOffset += 1;
-
-	console.log(`longitudeDegrees: ${longitudeDegrees}`);
-
-	const longitudeMinutes = buffer.readUInt16BE(bufferOffset);
-	bufferOffset += 2;
-
-	console.log(`longitudeMinutes: ${longitudeMinutes}`);
+	const longitudeMinutes = readBufferAsNumber({
+		buffer,
+		bufferTracker,
+		numberOfBytes: (propertySizesInBytes.moMessage.moLocation
+			.longitudeThousandsOfAMinuteMS +
+			propertySizesInBytes.moMessage.moLocation
+				.longitudeThousandsOfAMinuteLS) as NumberOfBytes,
+		messageTracker,
+	});
 
 	// TODO: Implement parsedLongitudeMinutes
 	// const parsedLongitudeMinutes = longitudeMinutes / 60000; // / (60 * 1000) = Convert Minutes To Decimal
@@ -88,27 +118,28 @@ export const parseMOLocationInformation: ParseMOBufferMethod = async ({
 	const longitude = parseFloat(
 		`${calculatedLongitudeDegrees}.${longitudeMinutes}`
 	); // TODO: + parsedLongitudeMinutes; // Calculate Decimal
-	console.log(`longitude: ${longitude}`);
 
-	const cepRadius = buffer.readUInt32BE(bufferOffset);
-	console.log(`cepRadius: ${cepRadius}`);
-	bufferOffset += 4;
+	const cepRadius = readBufferAsNumber({
+		buffer,
+		bufferTracker,
+		numberOfBytes: propertySizesInBytes.moMessage.moLocation.cepRadius,
+		messageTracker,
+	});
 
-	console.log(
-		`Adding ${bufferOffset} Bytes To currentNumberOfBytes: ${messageTracker.messageBytes.currentNumberOfBytes}`
-	);
-	messageTracker.messageBytes.currentNumberOfBytes += bufferOffset;
-	console.log(
-		`currentNumberOfBytes: ${messageTracker.messageBytes.currentNumberOfBytes}`
-	);
-
-	if (messageTracker.parsedMOMessage == undefined) {
-		messageTracker.parsedMOMessage = {};
-	}
-
-	messageTracker.parsedMOMessage.moLocationInformation = {
+	const moLocationInformation: IMOLocationInformation = {
 		latitude,
 		longitude,
 		cepRadius,
 	};
+
+	if (messageTracker.parsedMOMessage == undefined) {
+		messageTracker.parsedMOMessage = { moLocationInformation };
+	} else if (
+		messageTracker.parsedMOMessage.moLocationInformation == undefined
+	) {
+		messageTracker.parsedMOMessage.moLocationInformation =
+			moLocationInformation;
+	} else {
+		throw new Error('MO Location Information Already Defined'); // NOTE: Duplicate Error Handling
+	}
 };

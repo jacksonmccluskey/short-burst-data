@@ -44,6 +44,4 @@ export const determineMessageType = ({
 			throw new Error(`Invalid IEI: ${informationElementID}`);
 		}
 	}
-
-	console.log(`messageType: ${messageTracker.messageType}`);
 };

@@ -1,5 +1,5 @@
 import { IParsedMOMessage } from '../mo/parse-mo-buffer';
-import { IParsedMTConfirmationMessage } from '../mt/process-mt-confirmation';
+import { IParsedMTConfirmationMessage } from '../mt-confirmation/process-mt-confirmation';
 import { IParsedMTMessage } from '../mt/process-mt-message';
 import { MessageType } from './message-type.helper';
 
