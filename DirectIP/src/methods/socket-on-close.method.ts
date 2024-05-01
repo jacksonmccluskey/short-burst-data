@@ -14,10 +14,9 @@ export const socketOnClose = async ({
 }: ISocketOnClose) => {
 	socket.on('close', async () => {
 		await logEvent({
-			message: '⬜ Client Closed',
+			message: 'Client Closed',
 			event: 'TERMINATED',
 			action: actionSelection[messageTracker.messageType ?? 'MO'],
-			messageTracker,
 		});
 		resetMessageTracker({ messageTracker });
 	});

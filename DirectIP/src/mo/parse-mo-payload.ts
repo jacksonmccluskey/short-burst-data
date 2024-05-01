@@ -1,4 +1,4 @@
-import { increaseBufferOffset } from '../helpers/buffer-tracker.helper';
+import { readBufferAsString } from '../helpers/read-buffer.helper';
 import {
 	IParseMOBufferMethodArgs,
 	ParseMOBufferMethod,
@@ -24,18 +24,17 @@ export const parseMOPayload: ParseMOBufferMethod = async ({
 	}
 
 	// This Is The Actual MO Payload From The IMEI Currently At The Gateway. The Accompanying Payload Is A Result Of The Successful SBD Session Identified In The Header. In An MO Message Delivery Related To An Empty Mailbox Check (EMBC) Session Or A Failed Session, No Payload Will Be Included.
-	const payloadString = buffer.toString('utf-8');
+	const payloadString = readBufferAsString({
+		buffer,
+		bufferTracker,
+		messageTracker,
+		numberOfBytes: informationElementLength,
+	});
 
 	// The MO Payload Field Is The Data Of The MO Payload. The Size Of The MO Payload Is Restricted To 340 Bytes For The 9601 Series And 1960 Bytes For The A3LA Series
 	const payload = `0x${payloadString}`;
 
 	const payloadLength = informationElementLength;
-
-	increaseBufferOffset({
-		bufferTracker,
-		messageTracker,
-		numberOfBytes: payloadLength,
-	});
 
 	const moPayload: IMOPayload = {
 		payload,

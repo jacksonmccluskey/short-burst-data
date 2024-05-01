@@ -35,7 +35,7 @@ const socket = net.createConnection(
 			...moHeaderContent,
 		]);
 
-		const moPayloadContent = Buffer.from('ABC123', 'utf-8');
+		const moPayloadContent = convertStringToBuffer({ value: '010A02' });
 
 		const moPayload: Buffer = Buffer.from([
 			0x02,
