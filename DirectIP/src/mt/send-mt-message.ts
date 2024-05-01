@@ -14,11 +14,6 @@ export const sendMTMessage = async ({
 	mtHeaderBuffer,
 	mtPayloadBuffer,
 }: ISendMTMessage): Promise<void> => {
-	console.log('Sending MT Message...');
-	console.log(`mtMessageBuffer: ${mtMessageBuffer}`);
-	console.log(`mtHeaderBuffer: ${mtHeaderBuffer}`);
-	console.log(`mtPayloadBuffer: ${mtPayloadBuffer}`);
-
 	const socketPort = 10800; // process.env.COMMERCIAL_IRIDIUM_PORT ? parseInt(process.env.COMMERCIAL_IRIDIUM_PORT) : undefined
 	const socketHost = 'localhost'; // process.env.COMMERCIAL_IRIDIUM_GATEWAY ? parseInt(COMMERCIAL_IRIDIUM_GATEWAY) : undefined
 

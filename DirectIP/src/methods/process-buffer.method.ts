@@ -53,8 +53,6 @@ export const processBuffer = async ({
 			messageTracker,
 			informationElementLength,
 		});
-
-		console.log(`Buffer Processed...\n${JSON.stringify(messageTracker)}`);
 	} else {
 		throw new Error('No Message Type Defined');
 	}

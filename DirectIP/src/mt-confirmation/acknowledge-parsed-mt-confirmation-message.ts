@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { IHandleParsedMessageMethodArgs } from '../methods/handle-parsed-message.method';
 import { apiConfig } from '../config/api.config';
+import { actionSelection, logEvent } from '../helpers/log-event.helper';
 
 export const acknowledgeParsedMTConfirmationMessage = async ({
 	messageTracker,
@@ -21,10 +22,13 @@ export const acknowledgeParsedMTConfirmationMessage = async ({
 				},
 			}
 		);
-
-		console.log(data);
 	} catch (error) {
-		console.log(error);
+		await logEvent({
+			message: `Error Acknowledging MT Confirmation Message: ${error}`,
+			event: 'ERROR',
+			action: actionSelection['MC'],
+			messageTracker,
+		});
 	}
 
 	console.log(

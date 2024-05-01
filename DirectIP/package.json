@@ -25,10 +25,14 @@
   },
   "author": "@jacksonmccluskey",
   "dependencies": {
+    "aws-sdk": "^2.1610.0",
     "axios": "^1.6.8",
     "body-parser": "^1.20.2",
     "express": "^4.19.2",
     "mssql": "^10.0.2",
-    "npm": "^10.5.1"
+    "npm": "^10.5.1",
+    "winston": "^3.13.0",
+    "winston-aws-cloudwatch": "^3.0.0",
+    "winston-cloudwatch": "^6.2.0"
   }
 }

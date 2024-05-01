@@ -4,6 +4,7 @@ import { sendMTMessage } from '../mt/send-mt-message';
 import { convertMTMessageToBuffer } from '../mt/convert-mt-message-to-buffer';
 import { IMTHeader } from '../mt/parse-mt-header';
 import { IMTPayload } from '../mt/parse-mt-payload';
+import { actionSelection, logEvent } from '../helpers/log-event.helper';
 
 export const apiRoutes = (app: Express) => {
 	app.post('/api/mt', async (req, res) => {
@@ -37,6 +38,14 @@ export const apiRoutes = (app: Express) => {
 					mtMessageBuffer,
 					mtHeaderBuffer,
 					mtPayloadBuffer,
+				});
+
+				await logEvent({
+					message: `Writing MT Message:\n\nMT Header: ${JSON.stringify(
+						mtHeader
+					)}\n\nMT Payload: ${JSON.stringify(mtPayload)}`,
+					event: 'SUCCESS',
+					action: actionSelection['MT'],
 				});
 
 				processedMessageIDs.push(mtHeader.uniqueClientMessageID);

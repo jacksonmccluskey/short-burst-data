@@ -1,5 +1,4 @@
 import { propertySizesInBytes } from '../config/property-size.config';
-import { IBufferTracker } from '../helpers/buffer-tracker.helper';
 import {
 	readBufferAsNumber,
 	readBufferAsString,
@@ -18,8 +17,6 @@ export const processMTConfirmationMessage = async ({
 	bufferTracker,
 	messageTracker,
 }: IHandleProcessBufferMethodArgs) => {
-	console.log('🚀 Parsing MT Confirmation...');
-
 	if (messageTracker.parsedMTConfirmationMessage !== undefined) {
 		throw new Error(
 			'MT Confirmation Message Already Defined. Potential Duplicate Buffer'

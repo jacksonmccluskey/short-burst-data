@@ -2,6 +2,7 @@ import { apiConfig } from '../config/api.config';
 import { IHandleParsedMessageMethodArgs } from '../methods/handle-parsed-message.method';
 import axios from 'axios';
 import { validateParsedMOMessage } from './validate-parsed-mo-message';
+import { actionSelection, logEvent } from '../helpers/log-event.helper';
 
 export const saveParsedMOMessage = async ({
 	messageTracker,
@@ -9,10 +10,6 @@ export const saveParsedMOMessage = async ({
 	const { parsedMOMessage } = messageTracker;
 
 	validateParsedMOMessage({ parsedMOMessage });
-
-	console.log(
-		`🚀 Saving Parsed MO Message...\n${JSON.stringify(parsedMOMessage)}`
-	);
 
 	try {
 		const { data } = await axios.post(
@@ -25,8 +22,18 @@ export const saveParsedMOMessage = async ({
 			}
 		);
 
-		console.log(data);
+		await logEvent({
+			message: `Saved Parsed MO Message: ${JSON.stringify(data)}`,
+			event: 'SUCCESS',
+			action: actionSelection['MO'],
+			messageTracker,
+		});
 	} catch (error) {
-		console.log(error);
+		await logEvent({
+			message: `Error Saving Parsed MO Message: ${error}`,
+			event: 'ERROR',
+			action: actionSelection['MO'],
+			messageTracker,
+		});
 	}
 };

@@ -25,7 +25,7 @@ export const handleParsedMTMessage = async ({
 			parsedMTMessage?.mtHeader?.uniqueClientMessageID ?? 'XXXX',
 		IMEI: parsedMTMessage?.mtHeader?.IMEI ?? '123456789012345',
 		autoIDReference: 123456,
-		mtMessageStatus: MTMessageStatus.SUCCESS + Math.floor(Math.random() * 49),
+		mtMessageStatus: MTMessageStatus.SUCCESS + Math.floor(Math.random() * 49), // TODO: Write Actual Message Status (If Needed For Testing)
 	};
 
 	const mtcHeaderBufferContent = convertMTConfirmationBufferContent({

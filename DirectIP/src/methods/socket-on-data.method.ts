@@ -2,19 +2,22 @@ import net from 'net';
 import { IBufferTracker } from '../helpers/buffer-tracker.helper';
 import { initializeMessage } from './initialize-message.method';
 import { IMessageTracker } from '../helpers/message-tracker.helper';
-import { readBufferAsNumber } from '../helpers/read-buffer.helper';
-import { propertySizesInBytes } from '../config/property-size.config';
 import { determineMessageType } from '../helpers/message-type.helper';
 import { processBuffer } from './process-buffer.method';
 import { handleParsedMessage } from './handle-parsed-message.method';
 import { resetMessageTracker } from '../helpers/reset-message-tracker';
+import { actionSelection, logEvent } from '../helpers/log-event.helper';
+import { getInformation } from './get-information.method';
 
 export interface ISocketOnData {
 	socket: net.Socket;
 	messageTracker: IMessageTracker;
 }
 
-export const socketOnData = ({ socket, messageTracker }: ISocketOnData) => {
+export const socketOnData = async ({
+	socket,
+	messageTracker,
+}: ISocketOnData) => {
 	socket.on('data', async (buffer: Buffer) => {
 		const bufferTracker: IBufferTracker = {
 			offset: 0,
@@ -28,19 +31,8 @@ export const socketOnData = ({ socket, messageTracker }: ISocketOnData) => {
 			});
 
 			while (bufferTracker.offset < buffer.length) {
-				const informationElementID = readBufferAsNumber({
-					buffer,
-					bufferTracker,
-					messageTracker,
-					numberOfBytes: propertySizesInBytes.informationElementID,
-				});
-
-				const informationElementLength = readBufferAsNumber({
-					buffer,
-					bufferTracker,
-					messageTracker,
-					numberOfBytes: propertySizesInBytes.informationElementLength,
-				});
+				const { informationElementID, informationElementLength } =
+					getInformation({ buffer, bufferTracker, messageTracker });
 
 				determineMessageType({ informationElementID, messageTracker });
 
@@ -48,8 +40,8 @@ export const socketOnData = ({ socket, messageTracker }: ISocketOnData) => {
 					buffer,
 					bufferTracker,
 					informationElementID,
-					messageTracker,
 					informationElementLength,
+					messageTracker,
 				});
 			}
 
@@ -61,8 +53,13 @@ export const socketOnData = ({ socket, messageTracker }: ISocketOnData) => {
 				resetMessageTracker({ messageTracker });
 			}
 		} catch (error) {
-			console.log(`🟥 Data Error: ${error.message}`); // TODO: Implement winston CloudWatch Logs
-			resetMessageTracker({ messageTracker });
+			await logEvent({
+				message: `Socket On Data Error: ${error.message}`,
+				event: 'TERMINATED',
+				action: actionSelection[messageTracker.messageType ?? 'MO'],
+				messageTracker,
+			});
+			socket.destroy();
 		}
 
 		bufferTracker.offset = 0;

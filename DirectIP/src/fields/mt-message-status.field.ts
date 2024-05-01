@@ -19,17 +19,18 @@ export type MTMessageStatusDefinitions = {
 };
 
 export const mtMessageStatusDefinitions: MTMessageStatusDefinitions = {
-	SUCCESS: '',
-	EMPTY: '',
-	INVALID_IMEI: '',
-	UNKNOWN_IMEI: '',
-	PAYLOAD_SIZE_MAX: '',
-	PAYLOAD_EXPECTED: '',
-	MT_MESSAGE_QUEUE_FULL: '',
-	MT_RESOURCES_UNAVAILABLE: '',
-	VIOLATION_OF_PROTOCOL: '',
-	RING_ALERTS_DISABLED: '',
-	IMEI_NOT_ATTACHED: '',
+	SUCCESS: 'Successful, Order Of Message In The MT Message Queue', // NOTE: Could Be Value 1 to 50
+	EMPTY: 'Successful, No Payload In Message',
+	INVALID_IMEI: 'Invalid IMEI - Too Few Characters, Non-Numeric Characters',
+	UNKNOWN_IMEI: 'Unknown IMEI - Not Provisioned On The GSS',
+	PAYLOAD_SIZE_MAX: 'Payload Size Exceeded Maximum Allowed',
+	PAYLOAD_EXPECTED: 'Payload Expected, But None Received',
+	MT_MESSAGE_QUEUE_FULL: 'MT Message Queue Full (Max Of 50)',
+	MT_RESOURCES_UNAVAILABLE: 'MT Resources Unavailable',
+	VIOLATION_OF_PROTOCOL: 'Violation Of MT DirectIP Protocol',
+	RING_ALERTS_DISABLED: 'Ring Alerts To The Given IMEI Are Disabled',
+	IMEI_NOT_ATTACHED:
+		'The Given IMEI Is Not Attached (Not Set To Receive Ring Alerts)',
 };
 
 export const getMTMessageStatusDefinition = (

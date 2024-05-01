@@ -9,12 +9,6 @@ export const convertMTConfirmationBufferContent = ({
 }: {
 	parsedMTConfirmationMessage: IParsedMTConfirmationMessage;
 }): Buffer => {
-	console.log(
-		`Converting MT Confirmation Message To Buffer: ${JSON.stringify([
-			parsedMTConfirmationMessage,
-		])}`
-	);
-
 	/*
         0x00, // uniqueClientMessageID
         0x00, // uniqueClientMessageID

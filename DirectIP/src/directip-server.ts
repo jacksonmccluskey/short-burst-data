@@ -2,8 +2,10 @@ require('dotenv').config();
 
 import net from 'net';
 import { IMessageTracker } from './helpers/message-tracker.helper';
-import { resetMessageTracker } from './helpers/reset-message-tracker';
 import { socketOnData } from './methods/socket-on-data.method';
+import { actionSelection, logEvent } from './helpers/log-event.helper';
+import { socketOnClose } from './methods/socket-on-close.method';
+import { socketOnError } from './methods/socket-on-error.method';
 
 let directIPServer: net.Server | null = null;
 
@@ -11,29 +13,32 @@ const socketPort = process.env.SOCKET_PORT
 	? parseInt(process.env.SOCKET_PORT)
 	: 10800;
 
-directIPServer = net.createServer((socket: net.Socket) => {
-	console.log('✅ Client Connected');
+directIPServer = net.createServer(async (socket: net.Socket) => {
+	const clientIP = socket.remoteAddress;
+
+	await logEvent({
+		message: `Client Connected: ${clientIP}`,
+		event: 'SUCCESS',
+		action: actionSelection['MO'],
+	});
 
 	const messageTracker: IMessageTracker = {
 		messageBytes: { expectedNumberOfBytes: 0, currentNumberOfBytes: 0 },
 	};
 
-	socketOnData({ socket, messageTracker });
+	await socketOnData({ socket, messageTracker });
 
-	socket.on('error', (error) => {
-		console.log('🟥 Socket Error: ', error); // TODO: Implement winston CloudWatch Logs
-		resetMessageTracker({ messageTracker });
-		socket.destroy();
-	});
+	await socketOnError({ socket, messageTracker });
 
-	socket.on('close', () => {
-		console.log('⬜ Client Disconnected'); // TODO: Implement winston CloudWatch Logs
-		resetMessageTracker({ messageTracker });
-	});
+	await socketOnClose({ socket, messageTracker });
 });
 
-directIPServer.listen(socketPort, () => {
-	console.log(`✅ DirectIP Server Listening On Port ${socketPort}`);
+directIPServer.listen(socketPort, async () => {
+	await logEvent({
+		message: `DirectIP Server Listening On Port ${socketPort}`,
+		event: 'SUCCESS',
+		action: actionSelection['MO'],
+	});
 });
 
 /*
