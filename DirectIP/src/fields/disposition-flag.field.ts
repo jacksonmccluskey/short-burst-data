@@ -28,3 +28,21 @@ export const getDispositionFlagDefinition = (
 ): string => {
 	return dispositionFlagDefinitions[dispositionFlag];
 };
+
+export const isDispositionFlag = (
+	dispositionFlag?: number
+): dispositionFlag is DispositionFlag => {
+	return dispositionFlag
+		? Object.values(DispositionFlag).includes(dispositionFlag)
+		: false;
+};
+
+export function getDispositionFlagKey(
+	dispositionFlag: number
+): DispositionFlagKeys | undefined {
+	return isDispositionFlag(dispositionFlag)
+		? (DispositionFlag as { [key: number]: DispositionFlagKeys })?.[
+				dispositionFlag
+		  ]
+		: undefined;
+}

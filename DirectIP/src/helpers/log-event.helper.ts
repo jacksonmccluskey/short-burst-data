@@ -80,6 +80,7 @@ interface IConsoleLogArgs {
 	message: string;
 	event: Event;
 	messageTracker?: IMessageTracker;
+	source?: string;
 }
 
 const consoleLog = async ({
@@ -88,9 +89,11 @@ const consoleLog = async ({
 	messageTracker,
 }: IConsoleLogArgs) => {
 	console.log(
-		`${emojiSelection[event]} ${message}\n\nmessageTracker: ${JSON.stringify(
+		`${emojiSelection[event]} ${message}${
 			messageTracker
-		)}`
+				? '\n\nmessageTracker: ' + JSON.stringify(messageTracker)
+				: ''
+		}`
 	);
 };
 
@@ -98,11 +101,14 @@ const winstonMOLog = async ({
 	message,
 	event,
 	messageTracker,
+	source,
 }: IConsoleLogArgs) => {
 	winstonMOLogger.info(
-		`${emojiSelection[event]} ${message}\n\nmessageTracker: ${JSON.stringify(
+		`${emojiSelection[event]} ${message}${
 			messageTracker
-		)}`
+				? '\n\nmessageTracker: ' + JSON.stringify(messageTracker)
+				: ''
+		}\n\n${source ? '\n\nSource: ' + source : ''}`
 	);
 };
 
@@ -110,11 +116,14 @@ const winstonMTLog = async ({
 	message,
 	event,
 	messageTracker,
+	source,
 }: IConsoleLogArgs) => {
 	winstonMTLogger.info(
-		`${emojiSelection[event]} ${message}\n\nmessageTracker: ${JSON.stringify(
+		`${emojiSelection[event]} ${message}${
 			messageTracker
-		)}`
+				? '\n\nmessageTracker: ' + JSON.stringify(messageTracker)
+				: ''
+		}\n\n${source ? '\n\nSource: ' + source : ''}`
 	);
 };
 
@@ -122,11 +131,14 @@ const winstonMCLog = async ({
 	message,
 	event,
 	messageTracker,
+	source,
 }: IConsoleLogArgs) => {
 	winstonMCLogger.info(
-		`${emojiSelection[event]} ${message}\n\nmessageTracker: ${JSON.stringify(
+		`${emojiSelection[event]} ${message}${
 			messageTracker
-		)}`
+				? '\n\nmessageTracker: ' + JSON.stringify(messageTracker)
+				: ''
+		}\n\n${source ? '\n\nSource: ' + source : ''}`
 	);
 };
 
@@ -136,9 +148,11 @@ const emailLog = async ({
 	messageTracker,
 }: IConsoleLogArgs) => {
 	console.log(
-		`${emojiSelection[event]} ${message}\n\nmessageTracker: ${JSON.stringify(
+		`${emojiSelection[event]} ${message}${
 			messageTracker
-		)}`
+				? '\n\nmessageTracker: ' + JSON.stringify(messageTracker)
+				: ''
+		}`
 	); // TODO: Implement Email with AWS SES
 };
 
@@ -147,6 +161,7 @@ export interface ILogEventArgs {
 	event: Event;
 	action: Action;
 	messageTracker?: IMessageTracker;
+	source?: string;
 }
 
 const logSelection: {
@@ -164,8 +179,9 @@ export const logEvent = async ({
 	event,
 	action,
 	messageTracker,
+	source,
 }: ILogEventArgs): Promise<void> => {
-	await logSelection[action]({ message, event, messageTracker });
+	await logSelection[action]({ message, event, messageTracker, source });
 
 	if (messageTracker && event == 'TERMINATED') {
 		resetMessageTracker({ messageTracker });

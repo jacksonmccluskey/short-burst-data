@@ -9,7 +9,7 @@ export const saveParsedMOMessage = async ({
 }: IHandleParsedMessageMethodArgs): Promise<void> => {
 	const { parsedMOMessage } = messageTracker;
 
-	validateParsedMOMessage({ parsedMOMessage });
+	await validateParsedMOMessage({ parsedMOMessage });
 
 	try {
 		const { data } = await axios.post(

@@ -26,8 +26,8 @@ export const convertMTMessageToBuffer = ({
         0x00, // mtDispositionFlags
     */
 
-	if (!mtHeader || !mtPayload) {
-		throw new Error('Missing MT Header or Payload');
+	if (!mtHeader) {
+		throw new Error('Missing MT Header');
 	}
 
 	const mtHeaderBufferContent = convertMTHeaderBufferContent({ mtHeader });
@@ -47,6 +47,10 @@ export const convertMTMessageToBuffer = ({
         0x00, // mtPayloadBufferLength
         0x00, // x N Bytes mtPayloadBuffer
     */
+
+	if (!mtPayload) {
+		throw new Error('Missing MT Payload');
+	}
 
 	const mtPayloadBufferContent = convertMTPayloadBufferContent({ mtPayload });
 

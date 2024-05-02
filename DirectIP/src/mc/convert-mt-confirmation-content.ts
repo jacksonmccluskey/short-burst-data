@@ -35,6 +35,7 @@ export const convertMTConfirmationBufferContent = ({
 		...convertNumberToBuffer({
 			value: parsedMTConfirmationMessage.mtMessageStatus,
 			bufferSize: 2,
+			isSigned: true,
 		}),
 	]);
 };

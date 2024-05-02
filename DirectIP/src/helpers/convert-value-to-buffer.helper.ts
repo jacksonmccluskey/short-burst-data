@@ -11,25 +11,39 @@ export const convertStringToBuffer = ({
 export interface IConvertNumberToBufferArgs {
 	value: number;
 	bufferSize: 1 | 2 | 4;
+	isSigned?: boolean;
 }
 
 export const convertNumberToBuffer = ({
 	value,
 	bufferSize,
+	isSigned,
 }: IConvertNumberToBufferArgs) => {
 	const buffer = Buffer.alloc(bufferSize);
 
 	switch (bufferSize) {
 		case 1: {
-			buffer.writeUInt8(value);
+			if (isSigned) {
+				buffer.writeInt8(value);
+			} else {
+				buffer.writeUInt8(value);
+			}
 			break;
 		}
 		case 2: {
-			buffer.writeUInt16BE(value);
+			if (isSigned) {
+				buffer.writeInt16BE(value);
+			} else {
+				buffer.writeUInt16BE(value);
+			}
 			break;
 		}
 		case 4: {
-			buffer.writeUInt32BE(value);
+			if (isSigned) {
+				buffer.writeInt32BE(value);
+			} else {
+				buffer.writeUInt32BE(value);
+			}
 			break;
 		}
 	}

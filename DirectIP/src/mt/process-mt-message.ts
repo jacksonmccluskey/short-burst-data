@@ -16,12 +16,11 @@ export interface IProcessMTMessageArgs {
 }
 
 export const processMTMessage = async ({
-	buffer,
-	iei,
 	messageTracker,
-	informationElementLength,
 }: IProcessMTMessageArgs) => {
-	console.log(`🚀 Processing MT Message... ${JSON.stringify(messageTracker)}`);
+	console.log(
+		`🚀 Processing MT Message...\n\n${JSON.stringify(messageTracker)}`
+	);
 
-	// TODO: Iridium Gateway Simulation
+	// NOTE: Iridium Gateway Simulation
 };

@@ -50,6 +50,7 @@ export const processMTConfirmationMessage = async ({
 		bufferTracker,
 		messageTracker,
 		numberOfBytes: propertySizesInBytes.mtConfirmationMessage.mtMessageStatus,
+		isSigned: true,
 	});
 
 	const parsedMTConfirmationMessage: IParsedMTConfirmationMessage = {

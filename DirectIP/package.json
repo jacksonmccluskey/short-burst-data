@@ -25,7 +25,6 @@
   },
   "author": "@jacksonmccluskey",
   "dependencies": {
-    "aws-sdk": "^2.1610.0",
     "axios": "^1.6.8",
     "body-parser": "^1.20.2",
     "express": "^4.19.2",

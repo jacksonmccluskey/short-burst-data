@@ -1,7 +1,7 @@
 import { MessageType } from '../helpers/message-type.helper';
 import { IMessageTracker } from '../helpers/message-tracker.helper';
 import { callParseMOBufferMethod } from '../mo/parse-mo-buffer';
-import { processMTConfirmationMessage } from '../mt-confirmation/process-mt-confirmation';
+import { processMTConfirmationMessage } from '../mc/process-mt-confirmation';
 import { callParseMTBufferMethod } from '../mt/parse-mt-buffer';
 import { IEI } from '../fields/information-element-identifier.field';
 import { IBufferTracker } from '../helpers/buffer-tracker.helper';

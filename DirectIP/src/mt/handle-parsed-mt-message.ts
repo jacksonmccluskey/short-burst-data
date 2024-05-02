@@ -1,19 +1,14 @@
 import { IEI } from '../fields/information-element-identifier.field';
-import { MTMessageStatus } from '../fields/mt-message-status.field';
 import { convertNumberToBuffer } from '../helpers/convert-value-to-buffer.helper';
 import { IHandleParsedMessageMethodArgs } from '../methods/handle-parsed-message.method';
-import { convertMTConfirmationBufferContent } from '../mt-confirmation/convert-mt-confirmation-content';
-import { IParsedMTConfirmationMessage } from '../mt-confirmation/process-mt-confirmation';
+import { convertMTConfirmationBufferContent } from '../mc/convert-mt-confirmation-content';
+import { IParsedMTConfirmationMessage } from '../mc/process-mt-confirmation';
 
 export const handleParsedMTMessage = async ({
 	messageTracker,
 	socket,
 }: IHandleParsedMessageMethodArgs) => {
 	const { parsedMTMessage } = messageTracker;
-
-	console.log(
-		`Handling Parsed MT Message... ${JSON.stringify(parsedMTMessage)}`
-	);
 
 	if (!socket) {
 		return;
@@ -25,7 +20,7 @@ export const handleParsedMTMessage = async ({
 			parsedMTMessage?.mtHeader?.uniqueClientMessageID ?? 'XXXX',
 		IMEI: parsedMTMessage?.mtHeader?.IMEI ?? '123456789012345',
 		autoIDReference: 123456,
-		mtMessageStatus: MTMessageStatus.SUCCESS + Math.floor(Math.random() * 49), // TODO: Write Actual Message Status (If Needed For Testing)
+		mtMessageStatus: -1, // TODO: Write Actual Message Status (If Needed For Testing)
 	};
 
 	const mtcHeaderBufferContent = convertMTConfirmationBufferContent({

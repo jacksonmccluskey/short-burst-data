@@ -24,8 +24,6 @@ const socket = net.createConnection(
 			0x66, 0x10, 0x27, 0x4b,
 		]);
 
-		// const moHeaderContent = Buffer.from([0x5d, 0x12, 0xaa, 0xa8, 0x33]); // TODO: Stress Testing In-Progress
-
 		const moHeader: Buffer = Buffer.from([
 			0x01,
 			...convertNumberToBuffer({
@@ -108,20 +106,6 @@ const socket = net.createConnection(
 		socket.write(moPayload);
 		socket.write(moLocation);
 
-		// socket.write( // TODO: Stress Testing In-Progress
-		// 	Buffer.from([
-		// 		0x01,
-		// 		...convertToHexArray(
-		// 			moHeader.length + moPayload.length + moPayload.length
-		// 		), // + moLocation.length
-		// 		...moHeader,
-		// 		...moPayload,
-		// 		// ...moLocation
-		// 	])
-		// );
-		// socket.write(moPayload);
-		// // socket.write(moLocation);
-
 		socket.on('end', () => {
 			console.log(`⬜ Client Tester Disconnected`);
 		});
@@ -131,66 +115,3 @@ const socket = net.createConnection(
 		});
 	}
 );
-
-// const socket2 = net.createConnection(
-// 	// NOTE: Mock Connection From Client
-// 	{ port: socketPort, host: socketHost },
-// 	() => {
-// 		console.log(`✅ Tester Connected To Socket`);
-
-// 		const mtConfirmationContent = Buffer.from([
-// 			...Buffer.from('AAAA'),
-// 			0x33,
-// 			0x30,
-// 			0x30,
-// 			0x32,
-// 			0x33,
-// 			0x34,
-// 			0x30,
-// 			0x36,
-// 			0x34,
-// 			0x37,
-// 			0x33,
-// 			0x39,
-// 			0x30,
-// 			0x36,
-// 			0x30,
-// 			0x00,
-// 			0x00,
-// 			0x00,
-// 			0x00,
-// 			0x00,
-// 			0x00,
-// 		]);
-
-// 		// const moHeaderContent = Buffer.from([0x5d, 0x12, 0xaa, 0xa8, 0x33]); // TODO: Stress Testing In-Progress
-
-// 		const mtConfirmation: Buffer = Buffer.from([
-// 			0x44,
-// 			...convertNumberToBuffer({
-// 				value: mtConfirmationContent.length,
-// 				bufferSize: 2,
-// 			}),
-// 			...mtConfirmationContent,
-// 		]);
-
-// 		const message = Buffer.from([
-// 			0x01,
-// 			...convertNumberToBuffer({
-// 				value: mtConfirmation.length,
-// 				bufferSize: 2,
-// 			}),
-// 		]);
-
-// 		socket2.write(message);
-// 		socket2.write(mtConfirmation);
-
-// 		socket2.on('end', () => {
-// 			console.log(`⬜ Client Tester Disconnected`);
-// 		});
-
-// 		socket2.on('error', (error) => {
-// 			console.error(`🟥 Client Tester Error:`, error);
-// 		});
-// 	}
-// );

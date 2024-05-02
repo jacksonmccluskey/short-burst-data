@@ -8,24 +8,42 @@ export interface IReadBufferAsNumber {
 	bufferTracker: IBufferTracker;
 	messageTracker?: IMessageTracker;
 	numberOfBytes: NumberOfBytes;
+	isSigned?: boolean;
 }
 
-interface IReadUIntArgs {
+interface IReadIntArgs {
 	buffer: Buffer;
 	offset: number;
+	isSigned?: boolean;
 }
 
-const readUIntBytes: {
-	[keys in NumberOfBytes]: ({ buffer, offset }: IReadUIntArgs) => number;
+const readIntBytes: {
+	[keys in NumberOfBytes]: ({
+		buffer,
+		offset,
+		isSigned,
+	}: IReadIntArgs) => number;
 } = {
-	1: ({ buffer, offset }: IReadUIntArgs) => {
-		return buffer.readUInt8(offset);
+	1: ({ buffer, offset, isSigned }: IReadIntArgs) => {
+		if (isSigned) {
+			return buffer.readInt8(offset);
+		} else {
+			return buffer.readUInt8(offset);
+		}
 	},
-	2: ({ buffer, offset }: IReadUIntArgs) => {
-		return buffer.readUInt16BE(offset);
+	2: ({ buffer, offset, isSigned }: IReadIntArgs) => {
+		if (isSigned) {
+			return buffer.readInt16BE(offset);
+		} else {
+			return buffer.readUInt16BE(offset);
+		}
 	},
-	4: ({ buffer, offset }: IReadUIntArgs) => {
-		return buffer.readUInt32BE(offset);
+	4: ({ buffer, offset, isSigned }: IReadIntArgs) => {
+		if (isSigned) {
+			return buffer.readInt32BE(offset);
+		} else {
+			return buffer.readUInt32BE(offset);
+		}
 	},
 };
 
@@ -34,10 +52,12 @@ export const readBufferAsNumber = ({
 	bufferTracker,
 	messageTracker,
 	numberOfBytes,
+	isSigned,
 }: IReadBufferAsNumber): number => {
-	const parsedBuffer: number = readUIntBytes[numberOfBytes]({
+	const parsedBuffer: number = readIntBytes[numberOfBytes]({
 		buffer,
 		offset: bufferTracker.offset,
+		isSigned,
 	});
 
 	increaseBufferOffset({

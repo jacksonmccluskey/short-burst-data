@@ -5,6 +5,7 @@ import { convertMTMessageToBuffer } from '../mt/convert-mt-message-to-buffer';
 import { IMTHeader } from '../mt/parse-mt-header';
 import { IMTPayload } from '../mt/parse-mt-payload';
 import { actionSelection, logEvent } from '../helpers/log-event.helper';
+import { isValidMTMessage } from '../mt/is-valid-mt-message';
 
 export const apiRoutes = (app: Express) => {
 	app.post('/api/mt', async (req, res) => {
@@ -18,37 +19,45 @@ export const apiRoutes = (app: Express) => {
 			const processedMessageIDs = [];
 
 			while (messagesProcessed < req.body.length) {
-				const { mtHeader, mtPayload } = req.body[messagesProcessed];
+				const currentRequestedMessage = req.body[messagesProcessed];
 
-				if (!mtHeader || !mtPayload) {
-					const missingExpectedPropertiesMessage = `🟥 1 Or More Missing Properties: ${JSON.stringify(
-						req.body[messagesProcessed]
-					)}`;
+				const { mtHeader, mtPayload } = currentRequestedMessage;
 
-					throw new Error(missingExpectedPropertiesMessage);
-				}
-
-				const { mtMessageBuffer, mtHeaderBuffer, mtPayloadBuffer } =
-					convertMTMessageToBuffer({
-						mtHeader: mtHeader as IMTHeader,
-						mtPayload: mtPayload as IMTPayload,
+				try {
+					await isValidMTMessage({
+						requestedMessage: currentRequestedMessage,
 					});
 
-				await sendMTMessage({
-					mtMessageBuffer,
-					mtHeaderBuffer,
-					mtPayloadBuffer,
-				});
+					const { mtMessageBuffer, mtHeaderBuffer, mtPayloadBuffer } =
+						convertMTMessageToBuffer({
+							mtHeader: mtHeader as IMTHeader,
+							mtPayload: mtPayload as IMTPayload,
+						});
 
-				await logEvent({
-					message: `Writing MT Message:\n\nMT Header: ${JSON.stringify(
-						mtHeader
-					)}\n\nMT Payload: ${JSON.stringify(mtPayload)}`,
-					event: 'SUCCESS',
-					action: actionSelection['MT'],
-				});
+					await sendMTMessage({
+						mtMessageBuffer,
+						mtHeaderBuffer,
+						mtPayloadBuffer,
+					});
 
-				processedMessageIDs.push(mtHeader.uniqueClientMessageID);
+					await logEvent({
+						message: `Writing MT Message:\n\nMT Header: ${JSON.stringify(
+							mtHeader
+						)}\n\nMT Payload: ${JSON.stringify(mtPayload)}`,
+						event: 'SUCCESS',
+						action: actionSelection['MT'],
+					});
+
+					processedMessageIDs.push(mtHeader.uniqueClientMessageID);
+				} catch (error) {
+					await logEvent({
+						message: `Error Converting Or Sending MT Message: ${error}\n\nMT Header:\n\n${JSON.stringify(
+							mtPayload
+						)}\n\nMT Payload:\n\n${JSON.stringify(mtHeader)}`,
+						event: 'ERROR',
+						action: actionSelection['MT'],
+					});
+				}
 
 				messagesProcessed++;
 			}
@@ -58,7 +67,15 @@ export const apiRoutes = (app: Express) => {
 				processedMessageIDs,
 			});
 		} catch (error) {
-			console.error('🟥 Error Processing MT Messages:', error);
+			await logEvent({
+				message: `Error Processing MT Messages: ${error}\n\nRequest:\n\n${JSON.stringify(
+					req.body
+				)}`,
+				event: 'TERMINATED',
+				action: actionSelection['MT'],
+				source: req.ip,
+			});
+
 			res.status(500).json({ error: error.message });
 		}
 	});

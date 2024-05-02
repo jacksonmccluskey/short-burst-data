@@ -2,7 +2,7 @@ import net from 'net';
 import { MessageType } from '../helpers/message-type.helper';
 import { IMessageTracker } from '../helpers/message-tracker.helper';
 import { saveParsedMOMessage } from '../mo/save-parsed-mo-message';
-import { acknowledgeParsedMTConfirmationMessage } from '../mt-confirmation/acknowledge-parsed-mt-confirmation-message';
+import { acknowledgeParsedMTConfirmationMessage } from '../mc/acknowledge-parsed-mt-confirmation-message';
 import { handleParsedMTMessage } from '../mt/handle-parsed-mt-message';
 
 export interface IHandleParsedMessageMethodArgs {
