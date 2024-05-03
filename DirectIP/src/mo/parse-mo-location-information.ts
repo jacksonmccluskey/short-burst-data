@@ -1,9 +1,5 @@
 import { propertySizesInBytes } from '../config/property-size.config';
 import {
-	IBufferTracker,
-	increaseBufferOffset,
-} from '../helpers/buffer-tracker.helper';
-import {
 	NumberOfBytes,
 	readBufferAsNumber,
 } from '../helpers/read-buffer.helper';

@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "scripts": {
     "directip-api": "npx ts-node ./src/api/directip.api.ts",
-    "directip-server": "npx ts-node ./src/directip-server.ts",
+    "directip-server": "npx ts-node ./src/server/directip-server.ts",
     "test-directip-api": "npx ts-node ./src/testers/directip-api.tester.ts",
     "test-directip-server": "npx ts-node ./src/testers/directip-server.tester.ts"
   },

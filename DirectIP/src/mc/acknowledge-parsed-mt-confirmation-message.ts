@@ -3,8 +3,8 @@ import { IHandleParsedMessageMethodArgs } from '../methods/handle-parsed-message
 import { apiConfig } from '../config/api.config';
 import { actionSelection, logEvent } from '../helpers/log-event.helper';
 import {
+	MTMessageStatus,
 	getMTMessageStatusDefinition,
-	getMTMessageStatusKey,
 } from '../fields/mt-message-status.field';
 
 export const acknowledgeParsedMTConfirmationMessage = async ({
@@ -17,34 +17,43 @@ export const acknowledgeParsedMTConfirmationMessage = async ({
 	}
 
 	try {
-		const { data } = await axios.post(
-			apiConfig.updateIridiumMTMessages,
-			parsedMTConfirmationMessage,
-			{
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			}
-		);
+		const mtMessageStatus: number | undefined =
+			parsedMTConfirmationMessage?.mtMessageStatus;
 
-		const mtMessageStatus = parsedMTConfirmationMessage.mtMessageStatus;
+		const mtMessageStatusDefinition =
+			getMTMessageStatusDefinition(mtMessageStatus);
 
-		const mtMessageStatusKey = getMTMessageStatusKey(mtMessageStatus);
+		if (mtMessageStatus == MTMessageStatus.SUCCESS) {
+			const { data } = await axios.post(
+				apiConfig.updateIridiumMTMessages,
+				parsedMTConfirmationMessage,
+				{
+					headers: {
+						'Content-Type': 'application/json',
+					},
+				}
+			);
 
-		const mtMessageStatusDefinition = mtMessageStatusKey
-			? getMTMessageStatusDefinition(mtMessageStatus)
-			: 'Unknown Message Status';
-
-		logEvent({
-			message: `Acknowledged Parsed MT Confirmation Message...\n\nParsed MT Confirmation Message:\n\n${JSON.stringify(
-				parsedMTConfirmationMessage
-			)}\n\nMT Message Status:\n\n${mtMessageStatusDefinition}\n\nData:\n\n${JSON.stringify(
-				data
-			)}`,
-			event: 'SUCCESS',
-			action: actionSelection['MC'],
-			messageTracker,
-		});
+			logEvent({
+				message: `Acknowledged Parsed MT Confirmation Message...\n\nParsed MT Confirmation Message:\n\n${JSON.stringify(
+					parsedMTConfirmationMessage
+				)}\n\nMT Message Status:\n\n${mtMessageStatusDefinition}\n\nData:\n\n${JSON.stringify(
+					data
+				)}`,
+				event: 'SUCCESS',
+				action: actionSelection['MC'],
+				messageTracker,
+			});
+		} else {
+			logEvent({
+				message: `MT Message Was Not Successful.\n\nParsed MT Confirmation Message:\n\n${JSON.stringify(
+					parsedMTConfirmationMessage
+				)}\n\nMT Message Status:\n\n${mtMessageStatusDefinition}`,
+				event: 'WARN',
+				action: actionSelection['MC'],
+				messageTracker,
+			});
+		}
 	} catch (error) {
 		await logEvent({
 			message: `Error Acknowledging MT Confirmation Message: ${error}`,

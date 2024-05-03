@@ -1,11 +1,11 @@
 require('dotenv').config();
 
 import net from 'net';
-import { IMessageTracker } from './helpers/message-tracker.helper';
-import { socketOnData } from './methods/socket-on-data.method';
-import { actionSelection, logEvent } from './helpers/log-event.helper';
-import { socketOnClose } from './methods/socket-on-close.method';
-import { socketOnError } from './methods/socket-on-error.method';
+import { IMessageTracker } from '../helpers/message-tracker.helper';
+import { socketOnData } from '../methods/socket-on-data.method';
+import { actionSelection, logEvent } from '../helpers/log-event.helper';
+import { socketOnClose } from '../methods/socket-on-close.method';
+import { socketOnError } from '../methods/socket-on-error.method';
 
 let directIPServer: net.Server | null = null;
 

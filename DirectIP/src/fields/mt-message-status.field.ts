@@ -40,7 +40,7 @@ export function getMTMessageStatusDefinition(
 	mtMessageStatus?: MTMessageStatus
 ): string | undefined {
 	if (mtMessageStatus == undefined) {
-		return;
+		return 'Unknown Message Status';
 	}
 
 	if ((mtMessageStatus as number) >= 1 && (mtMessageStatus as number) <= 50) {
@@ -58,7 +58,13 @@ export function getMTMessageStatusDefinition(
 	return mtMessageStatusDefinitions[mtMessageStatus];
 }
 
-export function getMTMessageStatusKey(statusCode: number): MTMessageStatusKeys {
+export function getMTMessageStatusKey(
+	statusCode?: number
+): MTMessageStatusKeys | undefined {
+	if (statusCode == undefined) {
+		return undefined;
+	}
+
 	if (statusCode >= 1 && statusCode <= 50) {
 		return 'SUCCESS';
 	}
