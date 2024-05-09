@@ -4,8 +4,8 @@ export interface IConvertStringToBufferArgs {
 
 export const convertStringToBuffer = ({
 	value,
-}: IConvertStringToBufferArgs) => {
-	return Buffer.from(value.split('').map((char) => char.charCodeAt(0)));
+}: IConvertStringToBufferArgs): Buffer => {
+	return Buffer.from(value, 'ascii');
 };
 
 export interface IConvertNumberToBufferArgs {

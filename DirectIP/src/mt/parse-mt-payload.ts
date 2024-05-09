@@ -1,6 +1,5 @@
-import { propertySizesInBytes } from '../config/property-size.config';
 import { increaseBufferOffset } from '../helpers/buffer-tracker.helper';
-import { readBufferAsString } from '../helpers/read-buffer.helper';
+import { readBufferAsHexString } from '../helpers/read-buffer.helper';
 import { IParseMTBufferMethodArgs } from './parse-mt-buffer';
 
 export interface IMTPayload {
@@ -22,7 +21,7 @@ export const parseMTPayload = async ({
 		throw new Error('Not Enough Buffer To Parse MT Payload');
 	}
 
-	const payload = readBufferAsString({
+	const payload = readBufferAsHexString({
 		buffer,
 		bufferTracker,
 		messageTracker,

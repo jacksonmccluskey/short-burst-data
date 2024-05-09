@@ -1,4 +1,4 @@
-import { readBufferAsString } from '../helpers/read-buffer.helper';
+import { readBufferAsHexString } from '../helpers/read-buffer.helper';
 import {
 	IParseMOBufferMethodArgs,
 	ParseMOBufferMethod,
@@ -24,7 +24,7 @@ export const parseMOPayload: ParseMOBufferMethod = async ({
 	}
 
 	// This Is The Actual MO Payload From The IMEI Currently At The Gateway. The Accompanying Payload Is A Result Of The Successful SBD Session Identified In The Header. In An MO Message Delivery Related To An Empty Mailbox Check (EMBC) Session Or A Failed Session, No Payload Will Be Included.
-	const payloadString = readBufferAsString({
+	const payloadString = readBufferAsHexString({
 		buffer,
 		bufferTracker,
 		messageTracker,

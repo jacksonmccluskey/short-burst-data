@@ -1,9 +1,7 @@
 import { propertySizesInBytes } from '../config/property-size.config';
-import { IBufferTracker } from '../helpers/buffer-tracker.helper';
 import {
-	NumberOfBytes,
 	readBufferAsNumber,
-	readBufferAsString,
+	readBufferAsASCIIString,
 } from '../helpers/read-buffer.helper';
 import {
 	IParseMOBufferMethodArgs,
@@ -40,7 +38,7 @@ export const parseMOHeader: ParseMOBufferMethod = async ({
 		numberOfBytes: propertySizesInBytes.moMessage.moHeader.CDR,
 	});
 
-	const IMEI = readBufferAsString({
+	const IMEI = readBufferAsASCIIString({
 		// The IMEI Is Unique To Each ISU. In This Case It Is The IMEI Of The ISU That Sent The MO Message. It Is Always 15 Chracters
 		buffer,
 		bufferTracker,

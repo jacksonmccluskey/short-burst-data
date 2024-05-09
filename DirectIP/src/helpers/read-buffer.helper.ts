@@ -69,22 +69,41 @@ export const readBufferAsNumber = ({
 	return parsedBuffer;
 };
 
-export interface IReadBufferAsString {
+export interface IReadBufferAsASCIIString {
 	buffer: Buffer;
 	bufferTracker: IBufferTracker;
 	messageTracker?: IMessageTracker;
 	numberOfBytes: number;
 }
 
-export const readBufferAsString = ({
+export const readBufferAsASCIIString = ({
 	buffer,
 	bufferTracker,
 	messageTracker,
 	numberOfBytes,
-}: IReadBufferAsString) => {
+}: IReadBufferAsASCIIString) => {
 	const parsedBuffer: string = buffer
 		.subarray(bufferTracker.offset, bufferTracker.offset + numberOfBytes)
-		.toString('utf8');
+		.toString('ascii');
+
+	increaseBufferOffset({
+		bufferTracker,
+		messageTracker,
+		numberOfBytes,
+	});
+
+	return parsedBuffer;
+};
+
+export const readBufferAsHexString = ({
+	buffer,
+	bufferTracker,
+	messageTracker,
+	numberOfBytes,
+}: IReadBufferAsASCIIString) => {
+	const parsedBuffer: string = buffer
+		.subarray(bufferTracker.offset, bufferTracker.offset + numberOfBytes)
+		.toString('hex');
 
 	increaseBufferOffset({
 		bufferTracker,

@@ -3,12 +3,7 @@ import { IHandleParsedMessageMethodArgs } from '../methods/handle-parsed-message
 import axios from 'axios';
 import { validateParsedMOMessage } from './validate-parsed-mo-message';
 import { actionSelection, logEvent } from '../helpers/log-event.helper';
-import {
-	SessionStatus,
-	SessionStatusKeys,
-	getSessionStatusDefinition,
-	getSessionStatusKey,
-} from '../fields/session-status.field';
+import { getSessionStatusDefinition } from '../fields/session-status.field';
 
 export const saveParsedMOMessage = async ({
 	messageTracker,
@@ -37,7 +32,9 @@ export const saveParsedMOMessage = async ({
 		const sessionStatusDefinition = getSessionStatusDefinition(sessionStatus);
 
 		await logEvent({
-			message: `Saved Parsed MO Message: ${JSON.stringify(
+			message: `Saved Parsed MO Message:\n\n${JSON.stringify(
+				parsedMOMessage
+			)}\n\nSaveMOMessage Response:\n\n${JSON.stringify(
 				data
 			)}\n\nSession Status: ${sessionStatusDefinition}`,
 			event: 'SUCCESS',
@@ -46,7 +43,9 @@ export const saveParsedMOMessage = async ({
 		});
 	} catch (error) {
 		await logEvent({
-			message: `Error Saving Parsed MO Message: ${error}`,
+			message: `Error Saving Parsed MO Message: ${error}\n\n${JSON.stringify(
+				parsedMOMessage
+			)}`,
 			event: 'ERROR',
 			action: actionSelection['MO'],
 			messageTracker,

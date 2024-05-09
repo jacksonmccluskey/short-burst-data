@@ -1,7 +1,7 @@
 import { propertySizesInBytes } from '../config/property-size.config';
 import {
+	readBufferAsASCIIString,
 	readBufferAsNumber,
-	readBufferAsString,
 } from '../helpers/read-buffer.helper';
 import { IHandleProcessBufferMethodArgs } from '../methods/process-buffer.method';
 
@@ -23,7 +23,7 @@ export const processMTConfirmationMessage = async ({
 		);
 	}
 
-	const uniqueClientMessageID = readBufferAsString({
+	const uniqueClientMessageID = readBufferAsASCIIString({
 		buffer,
 		bufferTracker,
 		messageTracker,
@@ -31,7 +31,7 @@ export const processMTConfirmationMessage = async ({
 			propertySizesInBytes.mtConfirmationMessage.uniqueClientMessageID,
 	});
 
-	const IMEI = readBufferAsString({
+	const IMEI = readBufferAsASCIIString({
 		buffer,
 		bufferTracker,
 		messageTracker,

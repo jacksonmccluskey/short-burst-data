@@ -7,6 +7,14 @@ import { IMTPayload } from '../mt/parse-mt-payload';
 import { actionSelection, logEvent } from '../helpers/log-event.helper';
 import { isValidMTMessage } from '../mt/is-valid-mt-message';
 
+export type ProcessedMessageStatus = 'SUCCESS' | 'FAIL';
+
+export interface IProcessedMessageIDs {
+	uniqueClientMessageID?: string;
+	status: ProcessedMessageStatus;
+	message?: string;
+}
+
 export const apiRoutes = (app: Express) => {
 	app.post('/api/mt', async (req, res) => {
 		try {
@@ -16,7 +24,7 @@ export const apiRoutes = (app: Express) => {
 
 			let messagesProcessed = 0;
 
-			const processedMessageIDs = [];
+			const processedMessageIDs: IProcessedMessageIDs[] = [];
 
 			while (messagesProcessed < req.body.length) {
 				const currentRequestedMessage = req.body[messagesProcessed];
@@ -40,30 +48,56 @@ export const apiRoutes = (app: Express) => {
 						mtPayloadBuffer,
 					});
 
+					const processMessage = `Writing MT Message:\n\nMT Header: ${JSON.stringify(
+						mtHeader
+					)}\n\nMT Payload: ${JSON.stringify(mtPayload)}`;
+
 					await logEvent({
-						message: `Writing MT Message:\n\nMT Header: ${JSON.stringify(
-							mtHeader
-						)}\n\nMT Payload: ${JSON.stringify(mtPayload)}`,
+						message: processMessage,
 						event: 'SUCCESS',
 						action: actionSelection['MT'],
 					});
 
-					processedMessageIDs.push(mtHeader.uniqueClientMessageID);
+					processedMessageIDs.push({
+						uniqueClientMessageID: mtHeader?.uniqueClientMessageID,
+						status: 'SUCCESS',
+						message: processMessage,
+					});
 				} catch (error) {
+					const errorMessage = `Error Converting Or Sending MT Message: ${error}\n\nMT Header:\n\n${JSON.stringify(
+						mtHeader
+					)}\n\nMT Payload:\n\n${JSON.stringify(mtPayload)}`;
+
 					await logEvent({
-						message: `Error Converting Or Sending MT Message: ${error}\n\nMT Header:\n\n${JSON.stringify(
-							mtPayload
-						)}\n\nMT Payload:\n\n${JSON.stringify(mtHeader)}`,
+						message: errorMessage,
 						event: 'ERROR',
 						action: actionSelection['MT'],
+					});
+
+					processedMessageIDs.push({
+						uniqueClientMessageID: mtHeader?.uniqueClientMessageID,
+						status: 'FAIL',
+						message: errorMessage,
 					});
 				}
 
 				messagesProcessed++;
 			}
 
+			const successfulMessageIDs = processedMessageIDs.filter(
+				(processedMessageID) => processedMessageID.status === 'SUCCESS'
+			).length;
 			res.json({
-				message: `✅ ${messagesProcessed} MT Messages Received & Processed`,
+				message:
+					processedMessageIDs.length > 0
+						? `✅ ${messagesProcessed} MT Messages Received.\n\n✅ ${successfulMessageIDs} Processed Successfully${
+								messagesProcessed > successfulMessageIDs
+									? `\n\n🟨 ${
+											messagesProcessed - successfulMessageIDs
+									  } Invalid Messages`
+									: ''
+						  }`
+						: `🟨 ${messagesProcessed} Messages Received. None Valid.`,
 				processedMessageIDs,
 			});
 		} catch (error) {

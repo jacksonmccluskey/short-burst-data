@@ -1,9 +1,8 @@
 import { propertySizesInBytes } from '../config/property-size.config';
 import { DispositionFlag } from '../fields/disposition-flag.field';
-import { increaseBufferOffset } from '../helpers/buffer-tracker.helper';
 import {
+	readBufferAsASCIIString,
 	readBufferAsNumber,
-	readBufferAsString,
 } from '../helpers/read-buffer.helper';
 import { IParseMTBufferMethodArgs } from './parse-mt-buffer';
 
@@ -26,7 +25,7 @@ export const parseMTHeader = async ({
 		throw new Error('Not Enough Buffer To Parse MT Header');
 	}
 
-	const uniqueClientMessageID: string = readBufferAsString({
+	const uniqueClientMessageID: string = readBufferAsASCIIString({
 		buffer,
 		bufferTracker,
 		messageTracker,
@@ -34,7 +33,7 @@ export const parseMTHeader = async ({
 			propertySizesInBytes.mtMessage.mtHeader.uniqueClientMessageID,
 	});
 
-	const IMEI: string = readBufferAsString({
+	const IMEI: string = readBufferAsASCIIString({
 		buffer,
 		bufferTracker,
 		messageTracker,

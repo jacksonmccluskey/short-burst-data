@@ -15,8 +15,12 @@ export const sendMTMessage = async ({
 	mtHeaderBuffer,
 	mtPayloadBuffer,
 }: ISendMTMessage): Promise<void> => {
-	const socketPort = 10800; // process.env.COMMERCIAL_IRIDIUM_PORT ? parseInt(process.env.COMMERCIAL_IRIDIUM_PORT) : undefined
-	const socketHost = 'localhost'; // process.env.COMMERCIAL_IRIDIUM_GATEWAY ? parseInt(COMMERCIAL_IRIDIUM_GATEWAY) : undefined
+	const socketPort = process.env.SOCKET_PORT
+		? parseInt(process.env.SOCKET_PORT)
+		: 10800; // process.env.COMMERCIAL_IRIDIUM_PORT ? parseInt(process.env.COMMERCIAL_IRIDIUM_PORT) : undefined
+	const socketHost = process.env.SOCKET_HOST
+		? process.env.SOCKET_HOST
+		: 'localhost'; // process.env.COMMERCIAL_IRIDIUM_GATEWAY ? parseInt(COMMERCIAL_IRIDIUM_GATEWAY) : undefined
 
 	const socket = net.createConnection(
 		{ port: socketPort, host: socketHost },

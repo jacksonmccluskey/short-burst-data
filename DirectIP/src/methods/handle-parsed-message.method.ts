@@ -18,7 +18,7 @@ export const handleParsedMessageMethods: {
 	[keys in MessageType]: HandleParsedMessageMethod;
 } = {
 	MO: saveParsedMOMessage,
-	MT: handleParsedMTMessage,
+	MT: handleParsedMTMessage, // NOTE: Only For Testing
 	MC: acknowledgeParsedMTConfirmationMessage,
 };
 
