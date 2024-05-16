@@ -113,3 +113,11 @@ export const readBufferAsHexString = ({
 
 	return parsedBuffer;
 };
+
+export const readBufferAsHexArrayString = (buffer: Buffer) => {
+	return JSON.stringify(
+		Array.from(buffer).map(
+			(bufferElement) => `0x${bufferElement.toString(16).padStart(2, '0')}`
+		)
+	);
+};

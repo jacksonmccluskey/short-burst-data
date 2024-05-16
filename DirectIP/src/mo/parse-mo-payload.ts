@@ -1,4 +1,8 @@
-import { readBufferAsHexString } from '../helpers/read-buffer.helper';
+import { actionSelection, logEvent } from '../helpers/log-event.helper';
+import {
+	readBufferAsHexArrayString,
+	readBufferAsHexString,
+} from '../helpers/read-buffer.helper';
 import {
 	IParseMOBufferMethodArgs,
 	ParseMOBufferMethod,
@@ -40,6 +44,16 @@ export const parseMOPayload: ParseMOBufferMethod = async ({
 		payload,
 		payloadLength,
 	};
+
+	await logEvent({
+		// TODO: Temp For Testing
+		message: `Parsed MO Payload:\n\n${JSON.stringify(
+			moPayload
+		)}\n\nFrom Buffer:\n\n${readBufferAsHexArrayString(buffer)}`,
+		event: 'PROCESSING',
+		action: actionSelection['MO'],
+		messageTracker,
+	});
 
 	if (messageTracker.parsedMOMessage == undefined) {
 		messageTracker.parsedMOMessage = { moPayload };

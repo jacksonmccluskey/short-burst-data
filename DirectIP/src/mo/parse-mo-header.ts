@@ -1,7 +1,9 @@
 import { propertySizesInBytes } from '../config/property-size.config';
+import { actionSelection, logEvent } from '../helpers/log-event.helper';
 import {
 	readBufferAsNumber,
 	readBufferAsASCIIString,
+	readBufferAsHexArrayString,
 } from '../helpers/read-buffer.helper';
 import {
 	IParseMOBufferMethodArgs,
@@ -88,6 +90,16 @@ export const parseMOHeader: ParseMOBufferMethod = async ({
 		MOMSN,
 		timeOfSession,
 	};
+
+	await logEvent({
+		// TODO: Temp For Testing
+		message: `Parsed MO Header: ${JSON.stringify(
+			moHeader
+		)}\n\nFrom Buffer:\n\n${readBufferAsHexArrayString(buffer)}`,
+		event: 'PROCESSING',
+		action: actionSelection['MO'],
+		messageTracker,
+	});
 
 	if (messageTracker.parsedMOMessage == undefined) {
 		messageTracker.parsedMOMessage = { moHeader };

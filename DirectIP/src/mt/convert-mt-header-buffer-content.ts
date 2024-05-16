@@ -4,8 +4,8 @@ import {
 	isDispositionFlag,
 } from '../fields/disposition-flag.field';
 import {
+	convertASCIIStringToBuffer,
 	convertNumberToBuffer,
-	convertStringToBuffer,
 } from '../helpers/convert-value-to-buffer.helper';
 import { IMTHeader } from './parse-mt-header';
 
@@ -24,15 +24,15 @@ export const convertMTHeaderBufferContent = ({
         0x00, // mtDispositionFlags
     */
 
-	const dispositionFlag: DispositionFlag = DispositionFlag.SEND_RING_ALERT; // NOTE: This Is Currently Fixed To 2
+	const dispositionFlag: DispositionFlag = DispositionFlag.SEND_RING_ALERT; // NOTE: This Is Currently Fixed To 0x02
 
 	if (!isDispositionFlag(dispositionFlag as number)) {
 		throw new Error('Invalid MT Header Disposition Flag');
 	}
 
 	return Buffer.from([
-		...convertStringToBuffer({ value: mtHeader.uniqueClientMessageID }),
-		...convertStringToBuffer({ value: mtHeader.IMEI }),
+		...convertASCIIStringToBuffer({ value: mtHeader.uniqueClientMessageID }),
+		...convertASCIIStringToBuffer({ value: mtHeader.IMEI }),
 		...convertNumberToBuffer({
 			value: dispositionFlag,
 			bufferSize: propertySizesInBytes.mtMessage.mtHeader.dispositionFlag,

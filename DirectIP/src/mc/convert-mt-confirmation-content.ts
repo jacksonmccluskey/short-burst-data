@@ -1,6 +1,6 @@
 import {
 	convertNumberToBuffer,
-	convertStringToBuffer,
+	convertASCIIStringToBuffer,
 } from '../helpers/convert-value-to-buffer.helper';
 import { IParsedMTConfirmationMessage } from './process-mt-confirmation';
 
@@ -24,10 +24,10 @@ export const convertMTConfirmationBufferContent = ({
     */
 
 	return Buffer.from([
-		...convertStringToBuffer({
+		...convertASCIIStringToBuffer({
 			value: parsedMTConfirmationMessage.uniqueClientMessageID,
 		}),
-		...convertStringToBuffer({ value: parsedMTConfirmationMessage.IMEI }),
+		...convertASCIIStringToBuffer({ value: parsedMTConfirmationMessage.IMEI }),
 		...convertNumberToBuffer({
 			value: parsedMTConfirmationMessage.autoIDReference,
 			bufferSize: 4,

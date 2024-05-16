@@ -1,6 +1,8 @@
 import { propertySizesInBytes } from '../config/property-size.config';
+import { actionSelection, logEvent } from '../helpers/log-event.helper';
 import {
 	readBufferAsASCIIString,
+	readBufferAsHexArrayString,
 	readBufferAsNumber,
 } from '../helpers/read-buffer.helper';
 import { IHandleProcessBufferMethodArgs } from '../methods/process-buffer.method';
@@ -17,6 +19,15 @@ export const processMTConfirmationMessage = async ({
 	bufferTracker,
 	messageTracker,
 }: IHandleProcessBufferMethodArgs) => {
+	await logEvent({
+		message: `Processing MT Confirmation Buffer:\n\n${readBufferAsHexArrayString(
+			buffer
+		)}`,
+		event: 'PROCESSING',
+		action: actionSelection['MC'],
+		source: 'Iridium Gateway',
+	});
+
 	if (messageTracker.parsedMTConfirmationMessage !== undefined) {
 		throw new Error(
 			'MT Confirmation Message Already Defined. Potential Duplicate Buffer'
@@ -60,5 +71,14 @@ export const processMTConfirmationMessage = async ({
 		mtMessageStatus,
 	};
 
+	await logEvent({
+		// TODO: Temp For Testing
+		message: `Parsed MT Confirmation Message:\n\n${JSON.stringify(
+			parsedMTConfirmationMessage
+		)}\n\nFrom Buffer:\n\n${readBufferAsHexArrayString(buffer)}`,
+		event: 'PROCESSING',
+		action: actionSelection['MC'],
+		messageTracker,
+	});
 	messageTracker.parsedMTConfirmationMessage = parsedMTConfirmationMessage;
 };

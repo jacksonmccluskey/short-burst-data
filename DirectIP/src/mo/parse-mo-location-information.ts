@@ -1,6 +1,8 @@
 import { propertySizesInBytes } from '../config/property-size.config';
+import { actionSelection, logEvent } from '../helpers/log-event.helper';
 import {
 	NumberOfBytes,
+	readBufferAsHexArrayString,
 	readBufferAsNumber,
 } from '../helpers/read-buffer.helper';
 import {
@@ -127,6 +129,16 @@ export const parseMOLocationInformation: ParseMOBufferMethod = async ({
 		longitude,
 		cepRadius,
 	};
+
+	await logEvent({
+		// TODO: Temp For Testing
+		message: `Parsed MO Location Information:\n\n${JSON.stringify(
+			moLocationInformation
+		)}\n\nFrom Buffer:\n\n${readBufferAsHexArrayString(buffer)}`,
+		event: 'PROCESSING',
+		action: actionSelection['MO'],
+		messageTracker,
+	});
 
 	if (messageTracker.parsedMOMessage == undefined) {
 		messageTracker.parsedMOMessage = { moLocationInformation };

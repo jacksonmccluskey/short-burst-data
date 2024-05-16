@@ -2,7 +2,7 @@ require('dotenv').config();
 
 import net from 'net';
 import {
-	convertStringToBuffer,
+	convertHexStringToBuffer,
 	convertNumberToBuffer,
 } from '../helpers/convert-value-to-buffer.helper';
 
@@ -33,7 +33,7 @@ const socket = net.createConnection(
 			...moHeaderContent,
 		]);
 
-		const moPayloadContent = convertStringToBuffer({ value: '010A02' });
+		const moPayloadContent = convertHexStringToBuffer({ value: '010A02' });
 
 		const moPayload: Buffer = Buffer.from([
 			0x02,

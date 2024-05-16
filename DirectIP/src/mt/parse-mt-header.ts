@@ -1,5 +1,6 @@
 import { propertySizesInBytes } from '../config/property-size.config';
 import { DispositionFlag } from '../fields/disposition-flag.field';
+import { increaseBufferOffset } from '../helpers/buffer-tracker.helper';
 import {
 	readBufferAsASCIIString,
 	readBufferAsNumber,

@@ -3,6 +3,11 @@ import { socketOnData } from '../methods/socket-on-data.method';
 import { IMessageTracker } from '../helpers/message-tracker.helper';
 import { socketOnError } from '../methods/socket-on-error.method';
 import { socketOnClose } from '../methods/socket-on-close.method';
+import { actionSelection, logEvent } from '../helpers/log-event.helper';
+import {
+	readBufferAsASCIIString,
+	readBufferAsHexArrayString,
+} from '../helpers/read-buffer.helper';
 
 interface ISendMTMessage {
 	mtMessageBuffer: Buffer;
@@ -21,6 +26,21 @@ export const sendMTMessage = async ({
 	const socketHost = process.env.SOCKET_HOST
 		? process.env.SOCKET_HOST
 		: 'localhost'; // process.env.COMMERCIAL_IRIDIUM_GATEWAY ? parseInt(COMMERCIAL_IRIDIUM_GATEWAY) : undefined
+
+	const mtMessageBufferInterpretted =
+		readBufferAsHexArrayString(mtMessageBuffer);
+
+	const mtHeaderBufferInterpretted = readBufferAsHexArrayString(mtHeaderBuffer);
+
+	const mtPayloadBufferInterpretted =
+		readBufferAsHexArrayString(mtPayloadBuffer);
+
+	await logEvent({
+		message: `Writing Buffer (Sending MT Message):\n\nMT Message Buffer:\n\n${mtMessageBufferInterpretted}\n\nMT Header Buffer:\n\n${mtHeaderBufferInterpretted}\n\nMT Payload Buffer:\n\n${mtPayloadBufferInterpretted}`,
+		event: 'PROCESSING',
+		action: actionSelection['MT'],
+		source: 'directip-api',
+	});
 
 	const socket = net.createConnection(
 		{ port: socketPort, host: socketHost },

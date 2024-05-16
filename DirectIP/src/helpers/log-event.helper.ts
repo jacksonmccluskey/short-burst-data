@@ -60,7 +60,7 @@ winstonMCLogger.add(
 	})
 );
 
-type Event = 'SUCCESS' | 'WARN' | 'ERROR' | 'TERMINATED';
+type Event = 'SUCCESS' | 'WARN' | 'ERROR' | 'TERMINATED' | 'PROCESSING';
 type Action = 'CONSOLE' | 'WINSTON_MO' | 'WINSTON_MT' | 'WINSTON_MC' | 'EMAIL';
 
 export const actionSelection: { [keys in MessageType]: Action } = {
@@ -70,6 +70,7 @@ export const actionSelection: { [keys in MessageType]: Action } = {
 };
 
 const emojiSelection: { [keys in Event]: string } = {
+	PROCESSING: '🚀',
 	SUCCESS: '🟩',
 	WARN: '🟨',
 	ERROR: '🟥',

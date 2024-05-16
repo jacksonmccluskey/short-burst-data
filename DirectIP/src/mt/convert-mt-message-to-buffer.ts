@@ -55,7 +55,7 @@ export const convertMTMessageToBuffer = ({
 	const mtPayloadBufferContent = convertMTPayloadBufferContent({ mtPayload });
 
 	const mtPayloadBuffer = Buffer.from([
-		0x42,
+		0x42, // 0x42
 		...convertNumberToBuffer({
 			value: mtPayloadBufferContent.length,
 			bufferSize: 2,

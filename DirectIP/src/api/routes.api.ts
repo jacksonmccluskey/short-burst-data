@@ -48,7 +48,7 @@ export const apiRoutes = (app: Express) => {
 						mtPayloadBuffer,
 					});
 
-					const processMessage = `Writing MT Message:\n\nMT Header: ${JSON.stringify(
+					const processMessage = `Wrote MT Message:\n\nMT Header: ${JSON.stringify(
 						mtHeader
 					)}\n\nMT Payload: ${JSON.stringify(mtPayload)}`;
 

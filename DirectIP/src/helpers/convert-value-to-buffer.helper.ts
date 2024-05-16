@@ -2,10 +2,28 @@ export interface IConvertStringToBufferArgs {
 	value: string;
 }
 
-export const convertStringToBuffer = ({
+export const convertASCIIStringToBuffer = ({
 	value,
 }: IConvertStringToBufferArgs): Buffer => {
 	return Buffer.from(value, 'ascii');
+};
+
+export const convertHexStringToBuffer = ({
+	value,
+}: IConvertStringToBufferArgs): Buffer => {
+	const bufferElements: Buffer[] = [];
+
+	for (let i = 0; i < value.length / 2; i += 2) {
+		const currentByteString = value.substring(i, i + 2);
+
+		const currentByte = parseInt(currentByteString, 16);
+
+		const bufferElement = Buffer.from([currentByte]);
+
+		bufferElements.push(bufferElement);
+	}
+
+	return Buffer.concat(bufferElements);
 };
 
 export interface IConvertNumberToBufferArgs {
